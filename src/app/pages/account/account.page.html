@@ -1,0 +1,95 @@
+<ion-header class="header">
+  <ion-toolbar mode="ios" color="primary" class="main-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button mode="md"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>My Account</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/notification">
+        <ion-icon slot="icon-only" mode="ios" name="notifications-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-row class="profile">
+      <ion-col size="12" class="profile-wrap">
+        <h3>{{userData?.name}}</h3>
+        <ion-avatar class="img">
+          <img src="assets/images/user-profile.png">
+        </ion-avatar>
+        <ion-chip class="badge">
+          <ion-label>{{userData?.is_vip_card ? 'VIP USER' : userData?.total_buy2 > 5 ? 'LOYAL USER' : 'NORMAL USER'}}</ion-label>
+        </ion-chip>
+        <ng-container *ngIf="userData?.card_issue_date && userData?.card_expiry_date">
+          <p class="card-date"><span><small>Valid From:</small> {{userData?.card_issue_date | date:'MM/yy'}}</span><span><small>Valid Thru:</small> {{userData?.card_expiry_date | date:'MM/yy'}}</span></p>
+        </ng-container>
+      </ion-col>
+    </ion-row>
+    <ion-row class="menus">
+      <ion-list lines="none" class="list" mode="ios">
+        <ion-item button mode="md" [routerLink]="['/my-account']">
+          <svg class="icon start"><use xlink:href="#account" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h2>Account Details</h2>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+        <ion-item button mode="md" [routerLink]="['/tabs/my-orders']">
+          <svg class="icon start"><use xlink:href="#orders" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h2>Order History</h2>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+        <ion-item button mode="md" [routerLink]="['/my-reviews']">
+          <svg class="icon start"><use xlink:href="#reviews" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h2>Reviews</h2>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+        <ion-item button mode="md" [routerLink]="['/wish-list']">
+          <svg class="icon start"><use xlink:href="#wishlist" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h2>Wish List</h2>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+      </ion-list>
+      <ion-list lines="none" class="list" mode="ios">
+        <ion-item button mode="md" (click)="openVipModal('loyalty_card')">
+          <svg class="icon start"><use xlink:href="#loyalty" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h4>Loyalty Card</h4>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+        <ion-item button mode="md" (click)="openVipModal('vip_privilege')">
+          <svg class="icon start"><use xlink:href="#vip" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h4>How To Become A VIP</h4>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+        <ion-item button mode="md" [routerLink]="['/vip-privilege']">
+          <svg class="icon start"><use xlink:href="#privileges" /></svg>
+          <ion-label class="ion-text-wrap">
+            <h4>VIP PRIVILEGES</h4>
+          </ion-label>
+          <ion-icon slot="end" name="arrow-dropright" mode="ios" color="tertiary"></ion-icon>
+        </ion-item>
+      </ion-list>
+      <ion-col>
+        <ion-item lines="none" >
+          <ion-label class="ion-text-wrap" [routerLink]="['/need-help']">NEED HELP?</ion-label>
+          <ion-button slot="end" size="large" color="tertiary" mode="ios" class="btn-logout" (click)="logout()">
+            LOGOUT
+          </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+

@@ -1,0 +1,23 @@
+<ion-header class="header" mode="md">
+  <ion-toolbar class="toolbar" mode="md" color="primary">
+      <ion-buttons slot="start">
+          <ion-button (click)="goBack()">
+              <ion-icon slot="icon-only" name="arrow-back" mode="md"></ion-icon>
+          </ion-button>
+      </ion-buttons>
+      <ion-title class="title">bKash Payment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="loading">
+    <div style="position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 99999; 
+      display: flex; justify-content: center; align-items: center;
+      background: rgba(0, 0, 0, .5); color: white;">
+      <div style="display: grid; grid-auto-flow: column; grid-gap: .5em; align-items: center;">
+        <ion-spinner name="lines"></ion-spinner>
+        <ion-text>Please wait...</ion-text>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,67 @@
+<ion-content class="content" mode="md">
+  <ion-toolbar class="toolbar" mode="ios">
+    <ion-item mode="ios">
+      <ion-searchbar type="search" inputmode="search" mode="ios" [debounce]="searchType === 'algolia' ? 0 : 1000"
+        (ionChange)="searchProductText($event)" #search>
+      </ion-searchbar>
+      <ion-button type="submit" slot="end" (click)="searchProductbyEnter()">Enter
+        <ion-icon name="send" mode="md" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+  <ion-grid class="wrapper">
+    <ion-row class="products">
+      <ion-col size="12" *ngIf="listData">
+        <ion-list class="list" mode="ios">
+          <ng-container *ngIf="listData?.length > 0">
+            <ion-item *ngFor="let item of listData" (click)="productDetails(searchType === 'algolia' ? item?.id : item?.product_id)">
+              <ion-thumbnail slot="start">
+                <img [defaultImage]="defaultImage" [lazyLoad]="searchType === 'algolia' ? item?.image_url : item?.image">
+              </ion-thumbnail>
+              <ion-label class="ion-text-wrap">
+                <span class="_title">{{item.brand_name}}</span>
+                <span class="_desc">{{item.name}}</span>
+                <span class="_price" >
+                    <ng-container *ngIf="item.discount_price === item.regular_price; else discountPriceWrap;">
+                        {{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                    </ng-container>
+                    <ng-template #discountPriceWrap>
+                        {{item.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                        <small>{{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                    </ng-template>
+                </span>
+                <span class="_app_price" *ngIf="item?.app_price && item?.app_price > 0 && item?.app_price !== item?.discount_price">
+                    App Price: {{item.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                </span>
+              </ion-label>
+            </ion-item>
+          </ng-container>
+          <ng-container *ngIf="listData?.length === 0">
+            <ion-item>
+              <ion-label class="ion-text-wrap">No Search Data Found.</ion-label>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col *ngIf="searchText?.length > 0 && !listData">
+        <ion-item *ngFor="let item of [].constructor(5)">
+          <ion-avatar slot="start">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-avatar>
+          <ion-label class="ion-text-wrap">
+            <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+        <!-- <img [defaultImage]="defaultImage" [lazyLoad]="'assets/images/no-data.png'" />
+         <p>Sorry! no data found<span>Try Something else</span></p>-->
+      </ion-col>
+    </ion-row>
+    <!-- <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)" *ngIf="listData">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll> -->
+  </ion-grid>
+</ion-content>

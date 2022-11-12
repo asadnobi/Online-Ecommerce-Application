@@ -1,0 +1,29 @@
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: .75em;
+    .info {
+      .user_info {margin-bottom: 1em; padding: 1em;
+        .group {display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1em;margin-bottom: 0 !important;}
+        .item {--padding-start: 0;--inner-padding-end: 0; margin-bottom: 1em;
+          ion-label {font-size: 14px;margin: 0;}
+          ion-input, ion-textarea, ion-select, ion-datetime, ionic-selectable {background: var(--body-bg-light-color);--placeholder-font-weight: 300;--padding-start: 8px;margin-top: 0;}
+          .validation-message {margin: 5px 0;font-size: 12px; line-height: 1.5;color: var(--ion-color-danger);list-style: circle; padding-left: 2em;}
+        }
+      }
+    }
+    .pass {
+      .item {font-size: 15px;
+        ion-label {flex: unset; width: unset;}
+      }
+    }
+    .delivery, .payment {
+      .title {text-transform: uppercase;margin: 1em 0; font-size: 14px;}
+      .list {margin-bottom: 0;
+        ion-list-header {color: #6c757d;}
+        .item.active {pointer-events: none; cursor: default; --background: #c7c7c7;}
+      }
+    }
+  }
+}
+
+
+// .date-timer { --width: 80vw; --height: auto; --max-height: 100%; }

@@ -1,0 +1,14 @@
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: .75em;
+    .layout {font-size: 14px; line-height: 1.5;
+      .contact-form {
+        .item {--inner-border-width: 0;--border-radius: 4px;--border-width: 1px;--padding-start: 8px; --inner-padding-end: 8px;
+          font-size: 14px; --min-height: unset; margin-bottom: .5em;
+          ion-input, ion-textarea { --padding-top: 8px;--padding-bottom: 8px;margin-top: unset;}
+          ion-icon {color: #6c757d;margin-inline-end: 16px;}
+          .validation-message {margin: 5px 0;font-size: 12px; line-height: 1.5;color: var(--ion-color-danger);list-style: circle; padding-left: 2em;}
+        }
+      }
+    }
+  }
+}

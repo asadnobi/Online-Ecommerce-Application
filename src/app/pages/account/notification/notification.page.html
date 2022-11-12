@@ -1,0 +1,23 @@
+<ion-header class="header">
+  <ion-toolbar class="toolbar" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notification</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-row class="products">
+      <ion-col size="12" class="empty-notification">
+        <!--<img src="assets/images/empty-cart.png" alt="">-->
+        <ion-icon ios="ios-notifications-outline" md="md-notifications-outline" style="font-size: 120px;color:#999"></ion-icon>
+        <p class="text">You have no notification!</p>
+        <p class="text-des">Looks Like you haven't made your choice yet...</p>
+        <ion-button expand="full" routerLink="">Continue Shopping</ion-button>
+        <p class="text-more">Start shopping to make your first order.</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

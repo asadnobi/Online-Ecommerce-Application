@@ -1,0 +1,78 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>{{dataList?.category_name}}</ion-title>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="vip-privilege"></ion-back-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="content">
+
+    <ion-card>
+        <ion-img [src]="dataList?.logo" style="width: 150px; height: 150px; margin: 0 auto;"></ion-img>
+        <ion-card-content class="ion-margin-top" style="background: var(--ion-color-tertiary); color: var(--ion-color-tertiary-contrast);">
+            <ion-card-title color="light">{{dataList?.name}}
+                <small><br>{{dataList?.category_name}}<br></small>
+            </ion-card-title>
+            <rating [rate]="3.5" class="readonly light"></rating><br>
+            <ion-icon name="pin" slot="start"></ion-icon> {{dataList?.address}}
+            <!-- Mobile:{{dataList?.mobile}} -->
+        </ion-card-content>
+    </ion-card>
+    <ion-card fullscreen>
+        <img [defaultImage]="defaultImage" [lazyLoad]="dataList?.offer_for_vip_customer?.banner_image">
+        <ion-card-content color="dark">
+            <ion-text color="tertiary">
+                <h1>{{dataList?.offer_for_vip_customer?.discount_text}}</h1>
+            </ion-text>
+            <ion-text color="dark">
+                <p>Valid For: {{dataList?.offer_for_vip_customer?.valid_for}}</p>
+                <p>Valid Till: {{dataList?.offer_for_vip_customer?.valid_till}}</p>
+            </ion-text>
+            <ion-button color="tertiary" size="small" (click)="showAlert({title: 'Offer Details', msg: dataList?.offer_for_vip_customer?.discount_details})">Details</ion-button>
+            <ion-button color="tertiary" size="small" (click)="showAlert({title: 'Terms & Conditions', msg: dataList?.offer_for_vip_customer?.discount_terms_and_conditions})">T & C</ion-button>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-title class="ion-padding">Gallery</ion-card-title>
+        <ion-item *ngFor="let item of dataList?.galleries">
+            <img [defaultImage]="defaultImage" [lazyLoad]="item" style="margin-bottom: 2px">
+        </ion-item>
+    </ion-card>
+    <ion-card>
+        <ion-card-title class="ion-padding">About</ion-card-title>
+        <ion-card-content>
+            <ion-card-subtitle><u>Timing:</u></ion-card-subtitle>
+            <p [innerHTML]="dataList?.timing"></p>
+        </ion-card-content>
+        <ion-card-content>
+            <ion-card-subtitle><u>Specialties:</u></ion-card-subtitle>
+            <p [innerHTML]="dataList?.specialties"></p>
+        </ion-card-content>
+        <ion-card-content>
+            <ion-card-subtitle><u>Contact:</u></ion-card-subtitle>
+            <p><a href="tel:{{dataList?.mobile}}">{{dataList?.mobile}}</a></p>
+            <p><a href="{{dataList?.facebook}}">{{dataList?.facebook}}</a></p>
+        </ion-card-content>
+    </ion-card>
+    <ion-card *ngFor="let item of dataList?.locations">
+      <ion-card-content [innerHTML]="item | mymap"></ion-card-content>
+    </ion-card>
+    <ion-col size="12" class="wrapper">
+        <h3 class="ion-margin-bottom">Nearby</h3>
+        <ul class="related-grp">
+            <ng-container *ngFor="let item of dataList?.childs">
+                <li class="card" routerLink="/vip-privilege-details/{{item.id}}">
+                    <p class="img"
+                       [ngStyle]="{'background': 'url('+ item?.logo +') no-repeat center center / contain'}"></p>
+                    <p class="title">{{item?.name}}</p>
+                    <p class="subtitle">{{item?.category_name}}</p>
+                    <p class="discount">{{item?.discount_text}}</p>
+                </li>
+            </ng-container>
+        </ul>
+    </ion-col>
+</ion-content>

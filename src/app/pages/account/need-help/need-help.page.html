@@ -1,0 +1,51 @@
+<ion-header class="header">
+  <ion-toolbar class="toolbar" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Need Help</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list  class="more-list">
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'shipping-delivery'}">
+      <ion-label>Shipping & Delivery</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'legal-notice'}">
+      <ion-label>Legal Notice</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'terms-and-conditions'}">
+      <ion-label>Terms & Conditions</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'payments'}">
+      <ion-label>Payments</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'privacy-policy'}">
+      <ion-label>Privacy Policy</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'how-to-place-order'}">
+      <ion-label>How To Place Order</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'return-policy'}">
+      <ion-label>Return Policy</ion-label>
+    </ion-item>
+    <!-- <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'bkash-instant-cash-back-offer'}">
+      <ion-label>bKash Instant Cashback Offer</ion-label>
+    </ion-item> -->
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'the-mall-global'}">
+      <ion-label>The Mall Global</ion-label>
+    </ion-item>
+
+    <!-- <ion-item-divider mode="md">
+      <ion-label>Our Company</ion-label>
+    </ion-item-divider> -->
+
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'contact-us'}">
+      <ion-label>Contact Us</ion-label>
+    </ion-item>
+    <ion-item button [routerLink]="['/pages']" [queryParams]="{page: 'about-us'}">
+      <ion-label>About Us</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

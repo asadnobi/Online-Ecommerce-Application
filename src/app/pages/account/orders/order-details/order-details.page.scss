@@ -1,0 +1,42 @@
+.content {--background: var(--body-bg-light-color);
+  .wrapper {
+    .layout {
+      .card {background: var(--body-bg-color); width: 100%;margin: 0 0 1em 0;
+        .steper {list-style: none;padding: 0;display: grid;grid-template-columns: repeat(4, 1fr); justify-items: center; overflow: hidden;
+          .step {font-size: 10px;position: relative;display: grid;align-items: center;justify-items: center;width: 100%;
+            &:not(:last-child)::after {content: '';position: absolute; width: 76%; left: 62%; top: 30%;border-bottom: 1px solid;}
+            ion-icon {font-size: 2em;}
+          }
+          &.steper-custom {grid-template-columns: repeat(6, 1fr);row-gap: 1em;}
+        }
+        .timeline {
+          .item {--padding-start: 0; --inner-padding-end: 0;}
+          .ion-text-wrap {line-height: 1.2;
+            h4 {font-weight: bold;}
+          }
+          .btn {--padding-start: 8px; --padding-end: 8px;}
+        }
+        .item-list {
+          .item {--padding-start: 0;--inner-padding-end: 0; margin-bottom: .5em;
+            ion-label {font-size: 14px;margin: 0;}
+            .price {display: grid; justify-items: flex-end;
+              small{ text-decoration: line-through; opacity: .5;}
+            }
+            &:last-child{--border-width: 0;}
+          }
+        }
+        .sub-total {width: 100%;
+          .item {--min-height: unset;font-size: 14px;
+            .ion-text-wrap {display: flex; justify-content: space-between; margin: 0;}
+            &.total {font-size: 18px;padding-top: 4px;border-top: 1px solid #efefef;}
+          }
+        }
+        hr {border-bottom: 1px solid #efefef;}
+        p, h2, h4 {color: var(--body-fg-color);}
+      }
+      .reason-msg {width: 100%;
+        ion-label {width: 100%; text-align: center;}
+      }
+    }
+  }
+}

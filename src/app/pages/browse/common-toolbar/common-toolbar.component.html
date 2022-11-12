@@ -1,0 +1,15 @@
+<ion-header class="header" mode="md">
+    <ion-toolbar class="toolbar" color="primary">
+      <ion-buttons slot="start">
+          <ion-menu-button mode="md"></ion-menu-button>
+      </ion-buttons>
+      <ion-title class="title">
+          <div>
+              <img [defaultImage]="defaultImage" [lazyLoad]="'assets/logo/logo.png'" class="logo">                
+              <ion-button mode="md" (click)="openSearchbar($event)" >
+                  <svg class="icon start"><use xlink:href="#search-lens-black" /></svg> Search
+              </ion-button>
+          </div>
+      </ion-title>
+  </ion-toolbar>
+</ion-header>

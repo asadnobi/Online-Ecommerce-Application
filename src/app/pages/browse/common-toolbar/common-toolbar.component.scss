@@ -1,0 +1,11 @@
+.header {padding: 0;
+  .toolbar {
+    .title {
+      >div { display: grid; grid-template-columns: auto 1fr; grid-gap: .5em; }
+      .logo {max-height: 36px; max-width: 150px;}
+      .button {margin: 0; font-weight: bolder;--box-shadow: none; --border-width: 1px; --border-style: solid; --border-color: black; --border-radius: 0;
+        --background: #efefef;--color: black; width: 90%; margin-left: auto;
+      }
+    }
+  }
+}

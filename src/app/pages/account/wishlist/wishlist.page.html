@@ -1,0 +1,73 @@
+<ion-header class="header">
+    <ion-toolbar class="toolbar" color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="tabs/account"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Wish list</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <ion-grid class="wrapper">
+        <ion-row  *ngIf="!wishList">
+            <ion-col size="12" class="orders">
+                <ion-list class="list" lines="none" mode="ios">
+                    <ion-list-header class="header" mode="md">
+                        <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+                    </ion-list-header>
+                    <ion-item *ngFor="let item of [].constructor(3)">
+                        <ion-avatar slot="start">
+                            <ion-skeleton-text animated></ion-skeleton-text>
+                        </ion-avatar>
+                        <ion-label class="ion-text-wrap">
+                            <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+                            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row class="products" *ngIf="wishList?.length === 0">
+            <ion-col size="12" class="empty_list" >
+                <img [defaultImage]="defaultImage" [lazyLoad]="'assets/images/empty_wishlist.png'" alt="">
+                <p class="text">There are no items in your wishlist</p>
+                <p class="text-des">Start wishing and shop top brands and cult favourites now...</p>
+                <ion-button expand="full" routerLink="">Start Shopping</ion-button>
+                <p class="text-more">please add item to your wishlist</p>
+            </ion-col>
+        </ion-row>
+      <ion-row>
+        <ion-item-sliding *ngFor="let item of wishList">
+            <ion-item-options side="start" (ionSwipe)="deletewishList(item?.product_id)">
+                <ion-item-option expandable (click)="deletewishList(item?.product_id)">Delete</ion-item-option>
+            </ion-item-options>  
+            <ion-item lines="full" routerLink="/product-details/{{item.product_id}}">
+                <ion-thumbnail slot="start">
+                    <img [defaultImage]="defaultImage" [lazyLoad]="item.image" />
+                </ion-thumbnail>
+                <ion-label class="ion-text-wrap">
+                    <h4 class="_title">{{item.brand_name}}</h4>
+                    <p class="_desc">{{item.name}}</p>
+                    <p class="_price">
+                        <span class="_price" *ngIf="item.discount_price !== item.regular_price">
+                            {{item.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                            <small>{{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                        </span>
+                        <span class="_price" *ngIf="item.discount_price === item.regular_price">
+                            {{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                        </span>
+                    </p>
+                    <p class="_rate">
+                        <!-- <span><rating [rate]="4.5" class="readonly small"></rating></span>
+                        <span>25 reviews</span>-->
+                    </p>
+                </ion-label>
+                <ion-button slot="end" (click)="deletewishList(item?.product_id)" fill="outline">
+                    Delete
+                </ion-button>
+            </ion-item>
+        </ion-item-sliding>
+      </ion-row>
+    </ion-grid>
+</ion-content>

@@ -1,0 +1,90 @@
+<app-common-toolbar></app-common-toolbar>
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-toolbar mode="ios" class="grp-button">
+        <ion-buttons mode="ios">
+            <ion-button mode="ios" fill="solid" expand="block" [routerLink]="['/tabs/browse/category']">
+                Categories
+            </ion-button>
+            <ion-button mode="ios" fill="outline" expand="block" [routerLink]="['/tabs/browse/brand']">
+                Brands
+            </ion-button>
+            <ion-button mode="ios" fill="outline" expand="block" [routerLink]="['/tabs/browse/offer']">
+                Offers
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-row class="categories">
+        <!-- <ion-toolbar class="toolbar">
+            <ion-searchbar mode="ios" class="search_box" placeholder="Find Categories..."
+                            [(ngModel)]="searchCategoriesText" (ionInput)="selectGroup()"
+                            (ionChange)="categorySearch($event)">
+            </ion-searchbar>
+        </ion-toolbar> -->
+        <ion-row class="layout" *ngIf="categorySearchResult && categorySearchResult?.length > 0 && categorySearchResult?.length <5">
+            <ion-list class="list-brand">
+                <ion-item *ngFor="let item of categorySearchResult" (click)="selectCategory(item)">
+                    <ion-label class="ion-text-wrap"><h6>{{item.name}}</h6></ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-row>
+        <ng-container *ngIf="categories; else noCategoriesDiv">
+            <ion-slides #slides pager="true" [options]="catSlideOpts" (ionSlideDidChange)="slideChange($event)" class="cats">
+                <ion-slide *ngFor="let cat of categories">
+                    <ion-card class="cat" (click)="selectGroup(cat.id)">
+                        <ion-card-header class="cat-header" [ngStyle]="{background: 'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5)),
+                url('+cat.thumbnail+') no-repeat center center / cover'}">
+                        </ion-card-header>
+                        <ion-card-content mode="ios" class="cat-body">{{cat.name}}</ion-card-content>
+                    </ion-card>
+                </ion-slide>
+            </ion-slides>
+            <ion-list mode="md" class="list" *ngFor="let cat of categories" id="list_{{cat?.id}}">
+                <ion-list-header mode="md">
+                    <ion-label>{{cat.name}} Categories</ion-label>
+                </ion-list-header>
+                <li class="item" *ngFor="let submenu of cat?.children">
+                    <div (click)="selectCategory(submenu)">
+                    <ion-thumbnail class="image">
+                        <img [defaultImage]="defaultImage" [lazyLoad]="submenu?.thumbnail"/>
+                    </ion-thumbnail>
+                    <ion-label class="ion-text-wrap">{{submenu?.name}}</ion-label>
+                    </div>
+                    <div (click)="selectSubCategory(submenu)">
+                    <ion-icon color="medium" mode="md" name="add" size="large"></ion-icon>
+                    </div>
+                </li>
+                <li class="item" *ngIf="cat?.children?.length <= 0">
+                    <ion-label class="ion-text-wrap ion-text-center"><p>No Items Found.</p></ion-label>
+                </li>
+            </ion-list>
+        </ng-container>
+        <ng-template #noCategoriesDiv>
+            <ion-slides  pager="true" [options]="catSlideOpts" class="cats">
+                <ion-slide *ngFor="let cat of [].constructor(3)">
+                    <ion-card class="cat">
+                        <ion-card-header class="cat-header">
+                            <ion-skeleton-text animated style="height: 100%"></ion-skeleton-text>
+                        </ion-card-header>
+                        <ion-card-content mode="ios" class="cat-body">
+                            <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                            <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-slide>
+            </ion-slides>
+            <ion-list mode="md" class="list">
+                <ion-item lines="none" *ngFor="let item of [].constructor(5)">
+                    <ion-thumbnail slot="start" class="image">
+                        <ion-skeleton-text animated></ion-skeleton-text>
+                    </ion-thumbnail>
+                    <ion-label class="ion-text-wrap">
+                        <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                        <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ng-template>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,27 @@
+.content {
+  .wrapper {padding: 0;
+    .grp-button {max-width: 96%; margin: .5em auto;
+      .button {width: 100%;margin: 0;
+    --border-radius: 0;}
+    }
+    .brands {
+      .toolbar {--padding-start: 0;--padding-end: 0;
+        .search_box {padding: .25rem; background: #d7d8da;}
+      }
+      .layout {position: relative;width: 100%;
+        .list-brand {width: 100%;background: transparent;margin: 0 20px 0 0;
+          ion-item-group {margin-bottom: 1em;
+            ion-item-divider {background: #f4f5f8;color: #222428;font-weight: 600;}
+            .item:last-child {--inner-border-width: 0;}
+          }
+        }
+        .list-pager {margin: 0;position: absolute;right: 0; top: 0; bottom: 0; background: white; padding: 10px;
+          .item {--min-height: unset;font-size: 11px;--padding-start: 5px; --inner-padding-end: 0;
+            ion-label {margin: 1px 0;}
+            &.active {color: var(--ion-color-tertiary); font-weight: bold;}
+          }
+        }
+      }
+    }
+  }
+}

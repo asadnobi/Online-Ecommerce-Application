@@ -1,0 +1,48 @@
+<app-common-toolbar></app-common-toolbar>
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-toolbar mode="ios" class="grp-button">
+        <ion-buttons mode="ios">
+            <ion-button mode="ios" fill="outline" expand="block" [routerLink]="['/tabs/browse/category']">
+                Categories
+            </ion-button>
+            <ion-button mode="ios" fill="outline" expand="block" [routerLink]="['/tabs/browse/brand']">
+                Brands
+            </ion-button>
+            <ion-button mode="ios" fill="solid" expand="block" [routerLink]="['/tabs/browse/offer']">
+                Offers
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-row class="offer">
+        <ion-list  class="list">
+            <ng-container *ngIf="offerList; else noOfferWrap;">
+                <ng-container *ngFor="let item of offerList;">
+                  <ion-item lines="none" (click)="navigateByOffer(item?.id, item?.name)">
+                      <ion-thumbnail slot="start" class="image">
+                          <img [defaultImage]="defaultImage" [lazyLoad]="item?.image"/>
+                      </ion-thumbnail>
+                      <ion-label class="ion-text-wrap">{{item?.name}}</ion-label>
+                  </ion-item>
+                </ng-container>
+                <ion-item *ngIf="offerList?.length <= 0">
+                    <ion-label class="ion-text-wrap ion-text-center">
+                        <p>No Items Found.</p>
+                    </ion-label>
+                </ion-item>
+            </ng-container>
+            <ng-template #noOfferWrap>
+                <ion-item lines="none" *ngFor="let item of [].constructor(4)">
+                    <ion-thumbnail slot="start" class="image">
+                        <ion-skeleton-text animated></ion-skeleton-text>
+                    </ion-thumbnail>
+                    <ion-label class="ion-text-wrap">
+                        <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                        <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ng-template>
+        </ion-list>
+    </ion-row>
+  </ion-grid>
+</ion-content>

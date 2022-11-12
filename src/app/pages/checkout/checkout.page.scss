@@ -1,0 +1,37 @@
+.content {--background: var(--body-bg-light-color);
+  .wrapper {
+    .layout {
+      .card {background: var(--body-bg-color); width: 100%;margin: 0 0 1em 0;
+        .group {display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1em;}
+        .item {--padding-start: 0;--inner-padding-end: 0; margin-bottom: .5em;
+          ion-label {font-size: 14px;margin: 0;}
+          ion-input, ion-textarea, ion-select, ionic-selectable {background: var(--body-bg-light-color);--placeholder-font-weight: 300;--padding-start: 8px;margin-top: 0;}
+          .price {display: grid; justify-items: flex-end;
+            small{ text-decoration: line-through; opacity: .5;}
+          }
+          .variant {
+            span:not(:last-child) {
+              &::after {content: '|'; position: relative; margin: 0 5px;}
+            }
+          }
+        }
+        .validation-message {margin: 5px 0;font-size: 12px; line-height: 1.5;color: var(--ion-color-danger);list-style: circle; padding-left: 2em;}
+        .radio-group .item:last-child {--border-width: 0;}
+        .sub-total {width: 100%; padding: .5em 0 0;
+          .item {--min-height: unset;font-size: 14px;
+            .ion-text-wrap {display: flex; justify-content: space-between; margin: 0;}
+            &.total ion-label{font-weight: bold;font-size: 22px;margin-top: 8px;border-top: 1px solid #efefef;}
+          }
+        }
+        .small {width: 36px;height: 36px;}
+        .medium {width: 46px;height: 46px;}
+        .large {width: 64px;height: 64px;}
+      }
+    }
+    .dis {
+      >span {display: grid; grid-auto-flow: column;
+        span:not(:last-child)::after {content: '+'; margin: 0 3px;}
+      }
+    }
+  }
+}

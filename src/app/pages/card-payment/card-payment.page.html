@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Card Payment</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+    <ion-card>
+        <!-- <ion-card-header>
+             <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+             <ion-card-title>Card Title</ion-card-title>
+         </ion-card-header>-->
+
+        <ion-card-content>
+            <strong>
+                Thank you, your order has been saved in our system.Please confirm your payment done, we will contact you
+                soon!!
+            </strong>
+        </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <ion-card-content id="btnpay">
+            <button style=" display: block;width: 100%;border: none;background-color: #4CAF50;
+            padding: 14px 28px;font-size: 16px;cursor: pointer;text-align: center;"
+                    id="btnpay" token="if you have any token validation"
+                    (click)="createCardPayment()"> Pay Now
+            </button>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

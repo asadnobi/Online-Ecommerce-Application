@@ -1,0 +1,27 @@
+.header {
+  .main-toolbar {box-shadow: 0 0 16px rgba(0, 0, 0, .12);
+    .button .icon {fill: currentColor;}
+  }
+}
+.content {
+  .wrapper {
+    .profile {background: var(--body-bg-light-color); padding: 1em 0;
+      .profile-wrap{text-align: center; display: grid; grid-gap: .5em; justify-content: center; justify-items: center;
+        .img {margin: 0 auto; height: 120px; width: 120px;}
+        .badge {background: var(--ion-color-tertiary); color: var(--ion-color-tertiary-contrast); border-radius: 8px; 
+          letter-spacing: 1px; min-width: 200px; justify-content: center; height: unset;
+        }
+      }
+      .card-date {display: grid; grid-auto-flow: column; gap: 1em;}
+    }
+    .menus {
+      .list {width: 100%; margin: .5em 0;
+        .item {--background: var(--body-bg-light-color); margin-bottom: .35em; border-radius: 8px;
+          .ion-text-wrap {padding-left: .5em;}
+        }
+      }
+      .ion-hide{ display: block!important;}
+      .btn-logout {min-width: 120px; font-size: 14px; letter-spacing: 1px; height: auto; --padding-top: .5em; --padding-bottom: .5em;}
+    }
+  }
+}

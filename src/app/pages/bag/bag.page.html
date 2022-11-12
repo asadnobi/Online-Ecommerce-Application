@@ -1,0 +1,247 @@
+<ion-header class="header">
+    <ion-toolbar mode="ios" color="primary" class="main-toolbar">
+        <ion-buttons slot="start">
+            <ion-menu-button mode="md"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Shopping Bag</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="content" [scrollEvents]="true" (ionScroll)="pageScrolling($event)">
+    <ion-grid class="wrapper">
+        <ion-row class="products">
+            <ng-container *ngIf="cartData && cartData?.length > 0; else emptyCartDiv">
+                <ion-col size="12">
+                    <ion-list lines="full" class="list" mode="ios">
+                        <ng-container *ngFor="let item of cartData; index as i;">
+                            <ion-item [ngClass]="{'bg-warning': item?.quantity > item?.product_in}">
+                                <ion-thumbnail slot="start">
+                                    <img [defaultImage]="defaultImage" [lazyLoad]="item?.image+'?crop=0.651xw:1.00xh;0.167xw,0&resize=768:*'"/>
+                                </ion-thumbnail>
+                                <ion-label class="ion-text-wrap">
+                                    <h4 class="name">{{item?.name}}</h4>
+                                    <p class="variant" *ngIf="item?.colour || item?.size">
+                                        <span *ngIf="item?.colour">Color: {{item?.colour?.name}}</span>
+                                        <span *ngIf="item?.size">Size: {{item?.size?.name}}</span>
+                                    </p>
+                                    <p class="price">
+                                        <ng-container *ngIf="item?.product_type === 'regular'">
+                                            <span>
+                                                {{(item?.quantity * calcPrivilegesDiscountByProduct(item)) | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                                <span color="medium">
+                                                    ({{(calcPrivilegesDiscountByProduct(item) | currency:'BDT':'symbol-narrow':'1.2-2') +' x '+ item?.quantity}})
+                                                </span>
+                                            </span>
+                                            <span *ngIf="calcPrivilegesDiscountByProduct(item) < item?.regular_price">
+                                                {{(item?.quantity * item?.regular_price) | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                            </span>
+                                            <!-- <span>
+                                                {{(item?.quantity * item?.regular_price) | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                                <span color="medium">
+                                                    ({{(item?.regular_price | currency:'BDT':'symbol-narrow':'1.2-2') +' x '+ item?.quantity}})
+                                                </span>
+                                            </span> -->
+                                        </ng-container>
+                                        <ng-container *ngIf="item?.product_type === 'coupon'">
+                                            <span>Free
+                                                <span color="medium">
+                                                    (Coupon)
+                                                </span>
+                                            </span>
+                                        </ng-container>
+                                    </p>
+                                    <div class="btn-grp" *ngIf="item?.product_type === 'regular'">
+                                        <ion-buttons slot="start" class="left_btn_grp">
+                                            <ion-button color="medium" (click)="decrease(item, i)">
+                                                <ion-icon name="remove"></ion-icon>
+                                            </ion-button>
+                                            <ion-text color="dark" fill="clear" class="text">
+                                                <h2>{{item.quantity}}</h2>
+                                            </ion-text>
+                                            <ion-button color="medium" (click)="increase(item, i)">
+                                                <ion-icon name="add"></ion-icon>
+                                            </ion-button>
+                                        </ion-buttons>
+                                        <ion-button fill="clear" color="danger" size="small" mode="ios" (click)="removeItem(i)">
+                                            <ion-icon name="close" mode="md"></ion-icon>Remove
+                                        </ion-button>
+                                    </div>
+                                </ion-label>
+                            </ion-item>
+                        </ng-container>
+                    </ion-list>
+                </ion-col>
+                <ng-container *ngIf="cart_rules && cart_rules?.length > 0">             
+                    <ion-col size="12" class="title">
+                        <h4>Free product offer for you</h4>
+                        <p>you can add a single item from below list which are totally free of cost</p>
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-list lines="full" class="list" mode="ios">
+                            <ng-container *ngIf="!selected_cart_rules_product || selected_cart_rules_product?.length <= 0; else selectedCartRulesProductDiv">
+                                <ng-container *ngFor="let rule of cart_rules">
+                                    <ng-container *ngIf="grand_total >= rule.gross_amount; else describeOfferDiv">
+                                        <ion-item *ngFor="let item of rule?.cart_rules_products">
+                                            <ion-thumbnail slot="start">
+                                                <img [defaultImage]="defaultImage" [lazyLoad]="item?.image+'?crop=0.651xw:1.00xh;0.167xw,0&resize=768:*'"/>
+                                            </ion-thumbnail>
+                                            <ion-label class="ion-text-wrap">
+                                                <h4 class="name">{{item?.name}}</h4>
+                                            </ion-label>
+                                            <ion-button slot="end" color="secondary" mode="md" fill="outline" (click)="addCartRulesProductInBasket(item)">
+                                                <ion-icon name="add" mode="md"></ion-icon>Add
+                                            </ion-button>
+                                        </ion-item>
+                                    </ng-container>
+                                    <ng-template #describeOfferDiv>
+                                        <ion-item>
+                                            <ion-label class="ion-text-wrap ion-text-center" color="secondary">
+                                                Please spend more {{(rule.gross_amount - grand_total) | currency:'BDT':'symbol-narrow':'1.0-0'}} for get free product
+                                            </ion-label>
+                                        </ion-item>
+                                    </ng-template>                                    
+                                </ng-container>                                                 
+                            </ng-container>
+                            <ng-template #selectedCartRulesProductDiv>                            
+                                <ion-item *ngFor="let item of selected_cart_rules_product">
+                                    <ion-thumbnail slot="start">
+                                        <img [defaultImage]="defaultImage" [lazyLoad]="item?.image+'?crop=0.651xw:1.00xh;0.167xw,0&resize=768:*'"/>
+                                    </ion-thumbnail>
+                                    <ion-label class="ion-text-wrap">
+                                        <h4 class="name">{{item?.name}}</h4>
+                                    </ion-label>
+                                    <ion-button slot="end" color="danger" mode="ios" fill="clear" (click)="removeCartRulesProductInBasket()">
+                                        <ion-icon name="close" mode="md"></ion-icon>Remove
+                                    </ion-button>
+                                </ion-item>
+                            </ng-template>
+                        </ion-list>
+                    </ion-col>
+                </ng-container>
+                <ion-col size="12">
+                    <ion-row class="cart-amounts">
+                        <ion-list lines="none" class="list" mode="md">
+                            <ion-item>
+                                <ion-label class="ion-text-wrap">
+                                    <span>Sub Total</span><span>{{sub_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="prevliilageDisAmount && prevliilageDisAmount > 0">
+                                <ion-label class="ion-text-wrap dis">
+                                    <span>Discount({{prevliilageDisText.trim()}})</span>
+                                    <span>&mdash;&nbsp;&nbsp;{{prevliilageDisAmount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="app_discount_amount && app_discount_amount > 0">
+                                <ion-label class="ion-text-wrap">
+                                    <span>{{app_discount_text ? app_discount_text : 'App Discount'}}</span>
+                                    <span>&mdash;&nbsp;&nbsp;{{app_discount_amount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="service_charge && service_charge > 0">
+                                <ion-label class="ion-text-wrap">
+                                    <span>Service Charge</span><span> &#65291; {{service_charge | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item class="total" *ngIf="grand_total && grand_total > 0">
+                                <ion-label class="ion-text-wrap" color="tertiary">
+                                    <span>Total</span><span>{{grand_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                        </ion-list>
+                    </ion-row>
+                </ion-col>
+            </ng-container>
+            <ng-template #emptyCartDiv>
+                <ion-col size="12" class="empty-cart">
+                    <img [defaultImage]="defaultImage" [lazyLoad]="'assets/images/empty-cart.png'" alt="">
+                    <p class="text">Your Shopping Bag is Empty</p>
+                    <p class="text-des">Looks Like you haven't made your choice yet...</p>
+                    <ion-button expand="full" [routerLink]="['/tabs/browse/category']">Start Shopping</ion-button>
+                    <p *ngIf="!userData" class="text-more" (click)="signIn()">
+                        To retrieve your bag items. <u>sign in here</u></p>
+                </ion-col>
+            </ng-template>
+        </ion-row>
+        <ion-row class="recomended">
+            <ion-col size="12" class="title">
+                <h4>Recommended for You</h4>
+                <p>Tap item to add to your basket</p>
+            </ion-col>
+            <ion-col size="12">
+                <ion-list class="items" *ngIf="newArrivalProductList && newArrivalProductList.length > 0">
+                    <ng-container *ngFor="let item of newArrivalProductList">
+                        <ion-card class="box" [routerLink]="['/product-details', item?.product_id ]">
+                            <ion-card-header class="_img">
+                                <img [defaultImage]="defaultImage" [lazyLoad]="item.image" />
+                                <p class="top">
+                                    <img *ngIf="item?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                    <img *ngIf="item?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                    <img *ngIf="item?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                    <img *ngIf="item?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                </p>
+                            </ion-card-header>
+                            <ion-card-content class="_details">
+                                <span class="_title">{{item.brand_name}}</span>
+                                <span class="_desc">{{item.name}}</span>
+                                <span class="_price" >
+                                    <ng-container *ngIf="item.discount_price === item.regular_price; else discountPriceWrap;">
+                                        {{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </ng-container>
+                                    <ng-template #discountPriceWrap>
+                                        {{item.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        <small>{{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                    </ng-template>
+                                </span>
+                                <span class="_app_price" *ngIf="item?.app_price && item?.app_price > 0 && item?.app_price !== item?.discount_price">
+                                    App Price: {{item.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                </span>
+                                <span class="_rate">
+                                    <span><rating [rate]="item.review_rate ? item.review_rate : 0" class="readonly small"></rating></span>
+                                    <span>({{item?.review_count ? item?.review_count : 0}} {{item?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                </span>
+                                <ng-container *ngIf="item?.product_in <= 0">
+                                    <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                </ng-container>
+                            </ion-card-content>
+                        </ion-card>
+                    </ng-container>
+                </ion-list>
+                <ion-list class="items" *ngIf="!newArrivalProductList">
+                    <ion-card class="box" *ngFor="let item of [].constructor(6)">
+                        <ion-card-header class="ion-no-padding">
+                            <ion-skeleton-text animated style="width: 100%; height: 100px; margin: 0;"></ion-skeleton-text>
+                        </ion-card-header>
+                        <ion-card-content class="_details">
+                            <span class="_title"><ion-skeleton-text animated
+                                style="width: 50%"></ion-skeleton-text></span>
+                            <span class="_desc"><ion-skeleton-text animated
+                                style="width: 85%"></ion-skeleton-text></span>
+                            <span class="_price"><ion-skeleton-text animated
+                                style="width: 95%"></ion-skeleton-text></span>
+                            <span class="_rate">
+                                <span><ion-skeleton-text animated style="width: 25px"></ion-skeleton-text></span>
+                                <span><ion-skeleton-text animated style="width: 50px"></ion-skeleton-text></span>
+                            </span>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
+            <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data..."></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </ion-grid>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isScollTopBarShow">
+        <ion-fab-button (click)="scrollToTop()" size="small">
+            <ion-icon name="chevron-up-circle-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+<ion-footer class="footer" mode="ios" *ngIf="cartData && cartData?.length > 0">
+    <ion-toolbar class="toolbar" mode="ios">
+        <ion-button expand="full" shape="round" mode="ios" (click)="processCheckout()" [attr.disabled]="!grand_total || grand_total <= 0">
+            <ion-icon name="checkmark-circle-outline" slot="start" mode="md"></ion-icon>
+            Proceed to Checkout
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>

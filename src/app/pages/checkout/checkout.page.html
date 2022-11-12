@@ -1,0 +1,397 @@
+<ion-header>
+    <ion-toolbar class="toolbar" mode="md" color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="goBack()">
+                <ion-icon slot="icon-only" name="arrow-back" mode="md"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title class="title">Quick Checkout</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <form [formGroup]="form" (ngSubmit)="confirmOrder()">
+        <ion-grid class="wrapper">
+            <ion-row class="layout">
+                <ion-col size="12">
+                    <ion-card class="card">
+                        <ion-card-header>
+                            <ion-card-title>Delivery Address</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content class="card-content">
+                            <!-- <h2>User Data</h2>
+                            <hr> -->
+                            <ion-item-group class="group">
+                                <ion-item lines="none" class="item" mode="md">
+                                    <ion-label mode="ios" position="stacked">First name</ion-label>
+                                    <ion-input formControlName="first_name" type="text"
+                                               placeholder="your first name"></ion-input>
+                                    <ul class="validation-message"
+                                        *ngIf="f.first_name.touched && f.first_name.errors || submitted && f.first_name.errors">
+                                        <li *ngIf="f.first_name.errors.required">First Name is required.</li>
+                                        <li *ngIf="f.first_name.errors.length">First Name is not valid.</li>
+                                    </ul>
+                                </ion-item>
+                                <ion-item lines="none" class="item" mode="md">
+                                    <ion-label mode="ios" position="stacked">Last Name</ion-label>
+                                    <ion-input formControlName="last_name" type="text"
+                                               placeholder="your last name"></ion-input>
+                                    <ul class="validation-message"
+                                        *ngIf="f.last_name.touched && f.last_name.errors || submitted && f.last_name.errors">
+                                        <li *ngIf="f.last_name.errors.required">Last Name is required.</li>
+                                        <li *ngIf="f.last_name.errors.length">Last Name is not valid.</li>
+                                    </ul>
+                                </ion-item>
+                            </ion-item-group>
+                            <ion-item lines="none" class="item" mode="md">
+                                <ion-label mode="ios" position="stacked">E-mail</ion-label>
+                                <ion-input formControlName="email" type="email"
+                                           placeholder="example@gmail.com"></ion-input>
+                                <ul class="validation-message"
+                                    *ngIf="f.email.touched && f.email.errors || submitted && f.email.errors">
+                                    <li *ngIf="f.email.errors.required">Email is required.</li>
+                                    <li *ngIf="f.email.errors.pattern">Email is not valid.</li>
+                                </ul>
+                            </ion-item>
+                            <ion-item lines="none" class="item" mode="md">
+                                <ion-label mode="ios" position="stacked">Mobile Number</ion-label>
+                                <ion-input formControlName="mobile_number" type="tel" 
+                                    placeholder="01XXXXXXXXX"
+                                    [attr.disabled]="form.value.mobile_number && form.value.mobile_number.length>10 ? true:false"></ion-input>
+                                <ul class="validation-message"
+                                    *ngIf="f.mobile_number.touched && f.mobile_number.errors || submitted && f.mobile_number.errors">
+                                    <li *ngIf="f.mobile_number.errors.required">Mobile no. is required.</li>
+                                    <li *ngIf="f.mobile_number.errors.pattern">Mobile no. is not valid.</li>
+                                </ul>
+                            </ion-item>
+                            <ion-item lines="none" class="item" mode="md">
+                                <ion-label mode="ios" position="stacked">Address</ion-label>
+                                <ion-textarea formControlName="address" type="text"
+                                              placeholder="your address"></ion-textarea>
+                                <ul class="validation-message"
+                                    *ngIf="f.address.touched && f.address.errors || submitted && f.address.errors">
+                                    <li *ngIf="f.address.errors.required">Address is required.</li>
+                                </ul>
+                            </ion-item>
+                            <ion-item-group class="group">
+                                <ion-item lines="none" class="item" mode="md">
+                                    <ion-label mode="ios" position="stacked">City</ion-label>
+                                    <ionic-selectable #cityWrap formControlName="city" [items]="cityList" itemValueField="id" itemTextField="name" [canSearch]="true" (onChange)="setShippingMethod($event)">
+                                        <ng-template ionicSelectableHeaderTemplate>
+                                            <ion-toolbar color="primary" mode="ios">
+                                                <ion-buttons slot="start">
+                                                    <ion-button mode="ios" fill="clear" (click)="cityWrap.close()">
+                                                        <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                                    </ion-button>
+                                                </ion-buttons>
+                                                <ion-title>Select your City</ion-title>
+                                            </ion-toolbar>
+                                        </ng-template>
+                                    </ionic-selectable>
+                                    <ul class="validation-message"
+                                        *ngIf="f.city.touched && f.city.errors || submitted && f.city.errors">
+                                        <li *ngIf="f.city.errors.required">City is required.</li>
+                                    </ul>
+                                </ion-item>
+                                <ion-item lines="none" class="item" mode="md" [attr.disabled]="form?.value?.city?.id === 1 ? false : true">
+                                    <ion-label mode="ios" position="stacked">Area</ion-label>
+                                    <ionic-selectable #areaWrap formControlName="area" [items]="areaList" itemValueField="id" itemTextField="name" [canSearch]="true">
+                                        <ng-template ionicSelectableHeaderTemplate>
+                                            <ion-toolbar color="primary" mode="ios">
+                                                <ion-buttons slot="start">
+                                                    <ion-button mode="ios" fill="clear" (click)="areaWrap.close()">
+                                                        <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                                    </ion-button>
+                                                </ion-buttons>
+                                                <ion-title>Select your Area</ion-title>
+                                            </ion-toolbar>
+                                        </ng-template>
+                                    </ionic-selectable>
+                                    <ul class="validation-message"
+                                        *ngIf="f.area.touched && f.area.errors || submitted && f.area.errors">
+                                        <li *ngIf="f.area.errors.required">Area is required.</li>
+                                    </ul>
+                                </ion-item>
+                            </ion-item-group>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content>
+                            <ion-item lines="none" mode="ios">
+                                <ion-checkbox mode="md" slot="start" formControlName="order_delivery_address_check"
+                                              [checked]="addMoreAdds"
+                                              (ionChange)="showMoreAddsSegment()"></ion-checkbox>
+                                <ion-label class="ion-text-wrap">
+                                    <h5 style="font-weight: bold">I want to set another address for my Delivery</h5>
+                                </ion-label>
+                            </ion-item>
+                            <ion-list lines="full" class="list" *ngIf="form.value.order_delivery_address_check">
+                                <ng-container *ngIf="deliveryAddressList?.length > 0">
+                                    <ion-list-header>
+                                        <ion-label class="ion-text-wrap">
+                                            Please select shipping address
+                                        </ion-label>
+                                    </ion-list-header>
+                                    <ion-radio-group formControlName="order_delivery_address">
+                                        <ion-item-sliding *ngFor="let item of deliveryAddressList">
+                                            <ion-item-options side="start" (ionSwipe)="deleteAddress(item?.id)">
+                                                <ion-item-option expandable (click)="deleteAddress(item?.id)">Delete
+                                                </ion-item-option>
+                                            </ion-item-options>
+                                            <ion-item (click)="setShippingAdds(item)">
+                                                <ion-radio slot="start" [value]="item?.id"></ion-radio>
+                                                <ion-label class="ion-text-wrap">
+                                                    <h4>{{item?.address}},
+                                                        <ng-container *ngFor="let area of areaList">
+                                                            <span *ngIf="item?.area && item?.area == area?.id">{{area?.name}}, </span>
+                                                        </ng-container>
+                                                        <ng-container *ngFor="let city of cityList">
+                                                            <span *ngIf="item?.district == city?.id">{{city?.name}}</span>
+                                                        </ng-container>
+                                                    </h4>
+                                                    <h3>{{item?.first_name}} {{item?.last_name}}
+                                                        <small *ngIf="item?.phone !== ''"> - {{item?.phone}}</small>
+                                                    </h3>
+                                                </ion-label>
+                                            </ion-item>
+                                            <ion-item-options side="end" (ionSwipe)="editAddress(item)">
+                                                <ion-item-option expandable (click)="editAddress(item)">Edit
+                                                </ion-item-option>
+                                            </ion-item-options>
+                                        </ion-item-sliding>
+                                    </ion-radio-group>
+                                </ng-container>
+                                <ion-item *ngIf="!deliveryAddressList || deliveryAddressList?.length === 0">
+                                    <ion-label class="ion-text-wrap ion-text-center">
+                                        <h4>You have no delivery address yet!.<br>
+                                            <small>You can add one or more address from here...</small>
+                                        </h4>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-button expand="full" fill="clear" size="small" (click)="addAddress()">
+                                    <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                                    {{deliveryAddressList && deliveryAddressList?.length > 0 ? 'ADD MORE ADDRESS' : 'ADD NEW ADDRESS'}}
+                                </ion-button>
+                            </ion-list>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <h2>Shipping method</h2>
+                            <hr>
+                            <ion-radio-group class="radio-group">
+                                <ion-item lines="full" mode="md" *ngFor="let deliveryCharge of deliveryChargeList">
+                                    <ion-label class="ion-text-wrap">
+                                        <h4>{{deliveryCharge?.title}}</h4>
+                                        <p *ngIf="deliveryCharge?.id === 1">The Mall Delivery Service (within Dhaka
+                                            only)</p>
+                                        <p *ngIf="deliveryCharge?.id === 2">
+                                            S.A Paribahan / Sundarban Courier- For Delivery Outside Dhaka
+                                        </p>
+                                        <small>({{deliveryCharge?.amount | currency:'BDT ':'symbol':'1.0-0'}})</small>
+                                    </ion-label>
+                                    <!-- <ion-radio slot="start" [value]="deliveryCharge?.type"></ion-radio>-->
+                                </ion-item>
+                            </ion-radio-group>
+                            <ul class="validation-message"
+                                *ngIf="f.shipping_method.touched && f.shipping_method.errors || submitted && f.shipping_method.errors">
+                                <li *ngIf="f.shipping_method.errors.required">Shipping Method is required.</li>
+                            </ul>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <h2>Payment method</h2>
+                            <hr>
+                            <ion-radio-group formControlName="payment_method">
+                                <ion-item lines="full" mode="md">
+                                    <ion-label class="ion-text-wrap">Pay by Cash on Delivery</ion-label>
+                                    <ion-radio slot="start" [value]="1"></ion-radio>
+                                    <ion-thumbnail slot="end" class="medium">
+                                        <ion-img src="assets/images/checkout-icons/Cash On Delivery.png"></ion-img>
+                                    </ion-thumbnail>
+                                </ion-item>
+                                <ion-item lines="full" mode="md">
+                                    <ion-label class="ion-text-wrap">Visa / MasterCard</ion-label>
+                                    <ion-radio slot="start" [value]="2"></ion-radio>
+                                    <ion-thumbnail slot="end" class="small">
+                                        <ion-img src="assets/images/checkout-icons/Visa.png"></ion-img>
+                                    </ion-thumbnail>
+                                    <ion-thumbnail slot="end" class="small">
+                                        <ion-img src="assets/images/checkout-icons/mastercard.png"></ion-img>
+                                    </ion-thumbnail>
+                                    <ion-thumbnail slot="end" class="small">
+                                        <ion-img src="assets/images/checkout-icons/Amex.png"></ion-img>
+                                    </ion-thumbnail>
+                                </ion-item>
+                                <ion-item lines="none" mode="md">
+                                    <ion-label class="ion-text-wrap">Pay By Bkash</ion-label>
+                                    <ion-radio slot="start" [value]="3"></ion-radio>
+                                    <ion-thumbnail slot="end" class="large">
+                                        <ion-img src="assets/images/checkout-icons/bKash.png"></ion-img>
+                                    </ion-thumbnail>
+                                </ion-item>
+                            </ion-radio-group>
+                            <ul class="validation-message"
+                                *ngIf="f.payment_method.touched && f.payment_method.errors || submitted && f.payment_method.errors">
+                                <li *ngIf="f.payment_method.errors.required">Payment Method is required.</li>
+                            </ul>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <h2>Order summary</h2>
+                            <hr>
+                            <ion-list lines="full">
+                                <ion-item *ngFor="let item of cartData; let i=index">
+                                    <!-- <ion-text slot="start">{{item.quantity}} x</ion-text> -->
+                                    <ion-label class="ion-text-wrap">
+                                        <span>{{item.name}}</span>
+                                        <p class="variant" *ngIf="item?.colour || item?.size">
+                                            <span *ngIf="item?.colour">Color: {{item?.colour?.name}}</span>
+                                            <span *ngIf="item?.size">Size: {{item?.size?.name}}</span>
+                                        </p>
+                                    </ion-label>
+                                    <ion-text slot="end" class="price">
+                                        <ng-container *ngIf="item?.product_type === 'regular'">
+                                            {{(item?.quantity * calcPrivilegesDiscountByProduct(item)) | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                            <ng-container *ngIf="calcPrivilegesDiscountByProduct(item) < item?.regular_price">
+                                                <small>{{(item?.quantity * item?.regular_price) | currency:'BDT':'symbol-narrow':'1.2-2'}}</small>
+                                            </ng-container>
+                                            <ion-text color="medium">
+                                                ({{item?.quantity}} x {{calcPrivilegesDiscountByProduct(item) | currency:'BDT':'symbol-narrow':'1.2-2'}})
+                                            </ion-text>
+                                            <!-- {{(item?.quantity * item?.regular_price) | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                            <ion-text color="medium">
+                                                ({{(item?.regular_price | currency:'BDT':'symbol-narrow':'1.2-2') +' x '+ item?.quantity}})
+                                            </ion-text> -->
+                                        </ng-container>
+                                        <ng-container *ngIf="item?.product_type === 'coupon'">
+                                            Free
+                                            <ion-text color="medium">
+                                                (Coupon)
+                                            </ion-text>
+                                        </ng-container>
+                                    </ion-text>
+                                </ion-item>
+                            </ion-list>
+                            <ion-list lines="none" class="sub-total" mode="ios">
+                                <ion-item>
+                                    <ion-label class="ion-text-wrap">
+                                        <span>Sub Total</span><span>{{sub_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item *ngIf="prevliilageDisAmount && prevliilageDisAmount > 0">
+                                    <ion-label class="ion-text-wrap dis">
+                                        <span>Discount({{prevliilageDisText.trim()}})</span>
+                                        <span>&mdash;&nbsp;&nbsp;{{prevliilageDisAmount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item *ngIf="couponDisAmount && couponDisAmount > 0">
+                                    <ion-label class="ion-text-wrap">
+                                        <span>{{couponDisText ? couponDisText : 'Coupon Discount'}}
+                                        </span>
+                                        <span>&mdash;&nbsp;&nbsp;{{couponDisAmount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item *ngIf="app_discount_amount && app_discount_amount > 0">
+                                    <ion-label class="ion-text-wrap">
+                                        <span>{{app_discount_text ? app_discount_text : 'App Discount'}}</span>
+                                        <span>&mdash;&nbsp;&nbsp;{{app_discount_amount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-label class="ion-text-wrap">
+                                        <span>Delivery Charge</span>
+                                        <span> 
+                                            <ng-container *ngIf="delivery_charge > 0">
+                                                &#65291; {{delivery_charge | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="delivery_charge === 0">
+                                                Free shipping
+                                            </ng-container>
+                                        </span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item *ngIf="service_charge && service_charge > 0">
+                                    <ion-label class="ion-text-wrap">
+                                        <span>Service Charge</span><span> &#65291; {{service_charge | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item class="total" *ngIf="grand_total && grand_total > 0">
+                                    <ion-label class="ion-text-wrap" color="tertiary">
+                                        <span>Total</span><span>{{grand_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                    </ion-label>
+                                </ion-item>
+                            </ion-list>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <ion-item *ngIf="!selectedCouponId">
+                                <ion-input type="text" placeholder="Coupon code" formControlName="coupon"></ion-input>
+                                <ion-button mode="ios" expand="full" color="tertiary" style="height: 100%;" (click)="applyCoupon()">
+                                    Apply Coupon
+                                </ion-button>
+                            </ion-item>
+                            <p *ngIf="selectedCouponId">
+                                Applied Coupon <strong>{{form?.value?.coupon}}</strong>&nbsp;
+                                <ion-text color="tertiary" (click)="removeCoupon()" style="display: inline-block;">
+                                    <h4>Remove</h4>
+                                </ion-text>
+                            </p>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <p>If you would like to add any notes or comments about your order please enter them
+                                below.</p>
+                            <hr>
+                            <ion-item>
+                                <ion-textarea rows="3" placeholder="Order note"
+                                              formControlName="comments"></ion-textarea>
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                    <ion-card class="card">
+                        <ion-card-content class="card-content">
+                            <ul>
+                                <li>Security policy (Use a genuine Email Address to avoid any problem and prevent
+                                    problems while logging in)
+                                </li>
+                                <li>Delivery policy (Inside Dhaka delivery within 24hrs, Outside Dhaka delivery within
+                                    72hrs)
+                                </li>
+                                <li>Return policy (A user may return any unopened or defective item within 24 hours of
+                                    receiving the item.)
+                                </li>
+                            </ul>
+                            <ion-item lines="none" mode="ios">
+                                <ion-checkbox mode="md" slot="start"
+                                              formControlName="terms_and_conditions"></ion-checkbox>
+                                <ion-label class="ion-text-wrap">
+                                    <h6><a href="javscript:void(0)">I have read and agree to the terms and
+                                        conditions.</a></h6>
+                                </ion-label>
+                            </ion-item>
+                            <ul class="validation-message"
+                                *ngIf="f.terms_and_conditions.touched && f.terms_and_conditions.errors || submitted && f.terms_and_conditions.errors">
+                                <li *ngIf="f.terms_and_conditions.errors.required">Please accept terms & conditions.
+                                </li>
+                            </ul>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>
+
+<ion-footer class="footer">
+    <ion-toolbar class="toolbar">
+        <ion-button type="button" (click)="confirmOrder()" expand="full" shape="round" mode="ios" [attr.disabled]="submitted">
+            Proceed To Confirm <svg class="icon end"><use xlink:href="#next"/></svg>
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>
+

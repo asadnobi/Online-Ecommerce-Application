@@ -1,0 +1,15 @@
+.header {
+  .toolbar {
+    .title {padding-inline-start: 45px;padding-inline-end: 45px;font-weight: 500;}
+  }
+}
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: 0;
+    .chips {padding: 8px; display: flex; flex-flow: row; overflow-x: auto;
+      ion-chip {background: var(--body-bg-color); color: var(--body-fg-color); min-width: fit-content;
+        &.active {color: var(--body-bg-color); background: var(--body-fg-color);}
+      }
+    }
+    .list {display: block;}
+  }
+}

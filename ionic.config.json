@@ -1,0 +1,7 @@
+{
+  "name": "mallBD",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

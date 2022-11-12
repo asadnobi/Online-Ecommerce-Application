@@ -1,0 +1,89 @@
+<ion-header class="header">
+  <ion-toolbar mode="ios" color="primary" class="main-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button mode="md"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Beautyfeed</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="searchBar = true">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-row class="banner">
+      <img [defaultImage]="defaultImage" [lazyLoad]="'assets/images/beautyfeed_images.jfif'" class="banner_img"/>
+    </ion-row>
+    <iframe src="https://cdn.lightwidget.com/widgets/bfc263d62bf455b998fb9d3f4d8172da.html" scrolling="no" allowtransparency="true" class="lightwidget-widget" style="width:100%;border:0;overflow:hidden;"></iframe>
+       <ion-row class="menu" *ngIf="blogCategoryList">
+      <ion-segment mode="ios" scrollable (ionChange)="feedSelect($event)" [(ngModel)]="selectedFeed">
+        <ion-segment-button mode="ios" *ngFor="let category of blogCategoryList" value="{{category?.id}}">
+          <ion-label>{{category?.name}}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-row>
+    <ion-row class="info">
+      <ion-item-group class="group">
+        <ng-container *ngIf="filterBlogData; else noFilterWrap;">
+          <ion-item-divider class="group-title" mode="md">
+            <ion-label class="ion-text-wrap">
+              {{filterBlogData ? filterBlogData?.length : 0}} Articles
+              <ion-button mode="md" fill="clear" color="danger" class="ion-text-capitalize" (click)="clearFilter()">
+                Clear Filter
+              </ion-button>
+            </ion-label>
+          </ion-item-divider>
+          <ng-container *ngFor="let blog of filterBlogData">
+            <ion-card class="card" mode="ios" (click)="blogDetails(blog?.id)">
+              <img [defaultImage]="defaultImage" [lazyLoad]="blog?.image" />
+              <ion-card-header>
+                <ion-card-subtitle mode="md" color="secondary">{{blog?.category_name}}</ion-card-subtitle>
+                <ion-card-title mode="md">{{blog?.title}}</ion-card-title>
+              </ion-card-header>
+            </ion-card>
+          </ng-container>
+        </ng-container>
+        <ng-template #noFilterWrap>
+          <ion-item-divider class="group-title" mode="md">
+            <ion-label class="ion-text-wrap">
+              {{blogData ? blogData?.length : 0}} Articles
+             <!-- <ion-button mode="md" shape="round" fill="outline" color="medium" class="ion-text-capitalize" (click)="blogFilter()">
+                <ion-icon name="options" slot="start"></ion-icon> Filter
+              </ion-button> -->
+            </ion-label>
+          </ion-item-divider>
+          <ng-container *ngFor="let blog of blogData">
+            <ion-card class="card" mode="ios" (click)="blogDetails(blog?.id)">
+              <img [defaultImage]="defaultImage" [lazyLoad]="blog?.image" />
+              <ion-card-header>
+                <ion-card-subtitle mode="md" color="secondary">{{blog?.category_name}}</ion-card-subtitle>
+                <ion-card-title mode="md">{{blog?.title}}</ion-card-title>
+              </ion-card-header>
+            </ion-card>
+          </ng-container>
+        </ng-template>
+      </ion-item-group>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="overlay" [ngStyle]="{'display': searchBar ? 'block' : 'none'}" (click)="searchBar = false"></ion-grid>
+  <ion-card class="search-filed" [ngStyle]="{'display': searchBar ? 'block' : 'none'}">
+      <ion-card-header>
+          <ion-card-title mode="md">Search Blog</ion-card-title>
+          <ion-card-subtitle mode="md">Please enter input in search field</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content mode="md" class="content">
+          <ion-item mode="ios" lines="none">
+            <ion-searchbar  class="my-searchbar" mode="ios" [(ngModel)]="searchText"></ion-searchbar>
+            <ion-button slot="end" (click)="searchBlogByText()">Enter
+              <ion-icon name="send" mode="md" slot="end"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-button type="button" fill="clear" (click)="searchBar = false">
+              Cancel
+          </ion-button>
+          <ion-button fill="clear" (click)="searchBlogByText()">Ok</ion-button>
+      </ion-card-content>
+  </ion-card>
+</ion-content>

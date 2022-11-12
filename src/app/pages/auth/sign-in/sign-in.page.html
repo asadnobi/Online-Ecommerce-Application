@@ -1,0 +1,182 @@
+<ion-header class="header">
+    <ion-toolbar mode="ios" color="primary" class="main-toolbar">
+        <ion-buttons slot="start">
+            <ion-button [routerLink]="['/tabs/home']" routerLinkActive="active">
+                <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>LOGIN</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="content">
+   <!--{{facebookAuthData | json}}-->
+    <ion-grid class="wrapper">
+        <ion-row class="switch-box">
+            <ion-col size="12" class="switch-box-inner">
+                <h5 class="divider">Sign in with</h5>
+                <div class="btnLine">
+                   <!-- <ion-item lines="none" class="btn btn-fb" (click)="facebookSignIn()">
+                        <ion-thumbnail slot="start">
+                            <img src="assets/icon/btn-facebook.png" />
+                        </ion-thumbnail>
+                        <ion-label class="ion-text-center">Login with Facebook</ion-label>
+                    </ion-item> -->
+                    <ion-item lines="none" class="btn btn-gl" (click)="googleSignIn()">
+                        <ion-thumbnail slot="start">
+                            <img src="assets/icon/btn-google.png" />
+                        </ion-thumbnail>
+                        <ion-label class="ion-text-center">Sign in with Google</ion-label>
+                    </ion-item>
+                    <ion-item lines="none" class="btn btn-apple" (click)="appleSignIn()" *ngIf="isAppledevice">
+                        <ion-thumbnail slot="start">
+                            <img src="assets/icon/btn-apple.png" />
+                        </ion-thumbnail>
+                        <ion-label class="ion-text-center">Sign in with Apple</ion-label>
+                    </ion-item>
+                </div>
+                <p class="divider line"><span>OR</span></p>
+                <form *ngIf="switch === 'sign-in' && login_by === 'mobile'" [formGroup]="numberForm" (ngSubmit)="otpLogin(numberForm.value)">
+                    <h6>PHONE NUMBER</h6>
+                    <ion-item>
+                        <ion-button mode="md" fill="celar" size="large" style="height: unset; --padding-start: 0; letter-spacing: 0; --padding-end: 0;">
+                            <svg class="icon"><use xlink:href="#bangladesh-flag" /></svg>&nbsp;&nbsp; +880
+                        </ion-button>
+                        <ion-input name="mobile" type="tel" inputmode="tel" placeholder="login with your phone number"
+                                   formControlName="phone_number"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="f.phone_number.touched && f.phone_number.errors || submitted && f.phone_number.errors">
+                        <li *ngIf="f.phone_number.errors.required">Phone Number is required.</li>
+                        <li *ngIf="f.phone_number.errors.pattern">Please enter the correct Number.</li>
+                    </ul>
+                    <div class="btnGrp">
+                        <ion-button type="submit" color="primary" mode="ios" expand="block">
+                            LOGIN
+                        </ion-button>
+                        <ion-button type="button" color="light" mode="ios" expand="block" class="btn" (click)="loginBy('email')">
+                            LOGIN BY EMAIL
+                        </ion-button>
+                        <ion-button type="button" color="tertiary" mode="ios" expand="block" (click)="switch = 'sign-up'">
+                            NEW? REGISTER HERE!
+                        </ion-button>
+                    </div>
+                </form>
+                <form *ngIf="switch === 'sign-in' && login_by === 'email'" novalidate [formGroup]="emailForm"
+                      (ngSubmit)="emailLogin(emailForm.value)">
+                    <ion-item>
+                        <ion-label mode="ios" position="stacked">Email address</ion-label>
+                        <ion-input name="email" type="text" placeholder="example@gmail.com"
+                                   formControlName="email"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="e.email.touched && e.email.errors || submitted && e.email.errors">
+                        <li *ngIf="e.email.errors.required">Email is required.</li>
+                        <li *ngIf="e.email.errors.pattern">Email is not valid.</li>
+                    </ul>
+                    <ion-item>
+                        <ion-label mode="ios" position="stacked">Password</ion-label>
+                        <ion-input name="password" type="password" placeholder="your password"
+                                   formControlName="password" autocomplete="new-password"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="e.password.touched && e.password.errors || submitted && e.password.errors">
+                        <li *ngIf="e.password.errors.required">Password is required.</li>
+                        <li *ngIf="e.password.errors.minlength">Password is not valid.</li>
+                    </ul>
+                    <div class="btnGrp">
+                        <ion-button type="submit" color="primary" mode="ios" expand="block" class="ion-margin-top">
+                            LOGIN
+                        </ion-button>
+                        <ion-button type="button" color="light" mode="ios" expand="block" class="btn" (click)="loginBy('mobile')">
+                            LOGIN BY PHONE
+                        </ion-button>
+                        <ion-button type="button" color="tertiary" mode="ios" expand="block" (click)="switch = 'sign-up'">
+                            NEW? REGISTER HERE!
+                        </ion-button>
+                        <ion-button type="button" fill="clear" mode="ios" expand="full" [routerLink]="['/auth/forget-pass']">
+                            FORGOT PASSWORD?
+                        </ion-button>
+                    </div>
+                </form>
+                <form *ngIf="switch === 'sign-up'" [formGroup]="regForm" (submit)="register(regForm.value)">
+                    <ion-item>
+                        <ion-input name="first_name" type="text" placeholder="First Name"
+                                   formControlName="first_name"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.first_name.touched && r.first_name.errors || submitted && r.first_name.errors">
+                        <li *ngIf="r.first_name.errors.required">First name is required.</li>
+                        <li *ngIf="r.first_name.errors.minlength">Please given valid name.</li>
+                    </ul>
+                    <ion-item>
+                        <ion-input name="last_name" type="text" placeholder="Last Name"
+                                   formControlName="last_name"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.last_name.touched && r.last_name.errors || submitted && r.last_name.errors">
+                        <li *ngIf="r.last_name.errors.required">Last name is required.</li>
+                        <li *ngIf="r.last_name.errors.minlength">Please given valid name.</li>
+                    </ul>
+
+                    <ion-item>
+                        <ion-button mode="md" fill="celar" size="large" style="height: unset; --padding-start: 0; letter-spacing: 0;">
+                            <svg class="icon"><use xlink:href="#bangladesh-flag" /></svg>&nbsp;&nbsp; +880
+                        </ion-button>
+                        <ion-input name="mobile" type="tel" inputmode="tel" placeholder="Phone number"
+                                   formControlName="phone"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.phone.touched && r.phone.errors || submitted && r.phone.errors">
+                        <li *ngIf="r.phone.errors.required">Phone Number is required.</li>
+                        <li *ngIf="r.phone.errors.pattern">Phone Number is not correct.</li>
+                    </ul>
+
+                    <ion-item>
+                        <ion-input name="email" type="text" placeholder="Email address"
+                                   formControlName="email"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.email.touched && r.email.errors || submitted && r.email.errors">
+                        <li *ngIf="r.email.errors.required">Email is required.</li>
+                        <li *ngIf="r.email.errors.email || r.email.errors.pattern">Email is not valid.</li>
+                    </ul>
+                    <ion-item>
+                        <ion-input name="password" type="password" placeholder="Password" formControlName="password"
+                                   autocomplete="new-password"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.password.touched && r.password.errors || submitted && r.password.errors">
+                        <li *ngIf="r.password.errors.required">Password is required.</li>
+                        <li *ngIf="r.password.errors.minlength">Password should be minimum 6 characters</li>
+                    </ul>
+
+                    <ion-item>
+                        <ion-input name="password_confirmation" type="password" placeholder="Re-type Password"
+                                   formControlName="password_confirmation"
+                                   autocomplete="new-password"></ion-input>
+                    </ion-item>
+                    <ul class="invalid-feedback"
+                        *ngIf="r.password_confirmation.touched && r.password_confirmation.errors || submitted && r.password_confirmation.errors">
+                        <li *ngIf="r.password_confirmation.errors.required">Confirm Password is required.</li>
+                        <li *ngIf="r.password_confirmation.errors.mustMatch">Passwords must match.</li>
+                    </ul>
+                    <div class="btnGrp">
+                        <ion-button type="submit" color="tertiary" mode="ios" expand="block">
+                            REGISTER
+                        </ion-button>
+                        <ion-button type="button" color="light" mode="ios" expand="block" class="btn" (click)="login_by = 'mobile'; switch='sign-in'">
+                            LOGIN BY PHONE
+                        </ion-button>
+                        <ion-button type="button" color="primary" mode="ios" expand="block" (click)="login_by = 'email'; switch='sign-in'">
+                            LOGIN BY EMAIL
+                        </ion-button>
+                    </div>
+                </form>
+                <p>&nbsp;</p>
+                <ion-item lines="none" [routerLink]="['/need-help']">
+                    <ion-label class="ion-text-wrap">NEED HELP?</ion-label>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

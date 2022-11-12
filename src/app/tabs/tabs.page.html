@@ -1,0 +1,33 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <div class="left">
+      <ion-tab-button class="btn" tab="home">
+        <ion-label>
+          <svg class="icon"><use xlink:href="#home" /></svg> Home
+        </ion-label>
+      </ion-tab-button>
+      <ion-tab-button class="btn" tab="browse">
+        <ion-label>
+          <svg class="icon"><use xlink:href="#search-lens" /></svg> Search
+        </ion-label>
+      </ion-tab-button>
+      <ion-tab-button class="btn" tab="beautyfeed">
+        <ion-label>
+          <svg class="icon"><use xlink:href="#feed" /></svg> Beautyfeed
+        </ion-label>
+      </ion-tab-button>
+      <ion-tab-button class="btn" tab="account">
+        <ion-label>
+          <svg class="icon"><use xlink:href="#user-1" /></svg> Account
+        </ion-label>
+      </ion-tab-button>
+    </div>
+    <div class="right">
+      <ion-tab-button class="btn" tab="bag">
+        <ion-label>
+          <svg class="icon"><use xlink:href="#shop-bag" /></svg> Bag {{countItem ? '('+countItem+')' : null}}
+        </ion-label>
+      </ion-tab-button>
+    </div>
+  </ion-tab-bar>
+</ion-tabs>

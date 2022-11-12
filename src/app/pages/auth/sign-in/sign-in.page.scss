@@ -1,0 +1,55 @@
+.header {
+  .main-toolbar {box-shadow: 0 0 16px rgba(0, 0, 0, .12);
+    .button .icon {fill: currentColor;}
+  }
+}
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: 1em;
+    .switch {
+      ion-segment-button {text-transform: capitalize;font-size: 16px; font-weight: 600;min-height: 30px;}
+    }
+    .switch-box {
+      .header {text-align: center;display: flex;flex-direction: column;align-items: center; margin-top: 1em;
+        .img-fluid {max-height: 75px;max-width: 150px;}
+        .title {font-size: 24px; font-weight: 600; margin: .25em 0;}
+        .desc {font-size: 14px; line-height: 1.2; font-weight: 500;}
+      }
+      .switch-box-inner {padding: 1em .5em 0;//background: var(--body-bg-color);
+        >.item {--padding-start: 0;--inner-padding-end: 0; margin-bottom: .5em; --background: transparent;
+          ion-label {font-size: 16px;}
+          ion-input{--placeholder-font-weight: 300;--padding-start: 8px;min-height: 40px;}
+        }
+        .invalid-feedback {font-size: 12px; color: var(--ion-color-danger);margin: 0;padding-left: 1em;}
+        .options {display: grid; grid-template-columns: 1fr auto; grid-gap: .5em; align-items: center;
+          ion-checkbox {--border-radius: 0;--size: 18px;margin-right: 5px;}
+          .button {height: unset; font-size: 16px; --padding-start: 5px;--padding-end: 5px;}
+          ion-label {font-size: 12px;}
+        }
+        .btnGrp {display: grid;
+          .button {min-height: 3em; letter-spacing: 1px;}
+          .btn {--border-width: 1px; --border-color: var(--primary); --border-style: solid;}
+        }
+        .divider {text-align: center; margin: 1em auto;
+          &.line {border-bottom: 1px solid #989aa2; line-height: 0.1em; margin: 2em auto;}
+          span {background: var(--body-bg-light-color); padding: 0 .5em;}
+        }
+        .btnLine {display: grid; grid-gap: .75em;
+          .btn {font-size: 1.25em; --min-height: 52px; box-shadow: 0 0 5px rgba(0, 0, 0, .2); border-radius: 4px;
+            &.btn-fb {--background: #1877F2; --color: #ffffff;}
+            &.btn-gl {--background: #ffffff; --color: #1f1d1d; font-weight: 600;}
+            &.btn-apple {--background: #000000; --color: #ffffff;}
+            ion-thumbnail {width: 46px; height: 46px}
+          }
+        }
+        .skip-btn {text-decoration: underline; font-size: 14px;}          
+      }
+      .footer {align-self: flex-end; padding: 0; margin-top: 1em;
+        .list {width: 100%;margin-bottom: 16px;
+          .item {font-size: 14px;
+            ion-icon {margin-inline-end: 16px;}
+          }
+        }
+      }
+    }
+  }
+}

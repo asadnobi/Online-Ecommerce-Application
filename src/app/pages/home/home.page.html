@@ -1,0 +1,580 @@
+<ion-header class="header">
+    <ion-toolbar class="notices" color="primary">
+        <ng-container *ngIf="notices">
+            <ion-slides class="items">
+                <ng-container *ngFor="let item of notices">
+                    <ion-slide class="item">
+                        <p class="desc">{{$any(item)?.title}}</p>
+                    </ion-slide>
+                </ng-container>
+            </ion-slides>
+        </ng-container>
+    </ion-toolbar>
+    <ion-toolbar mode="md" class="main-toolbar">
+        <ion-buttons slot="start">
+            <ion-menu-button mode="md"></ion-menu-button>
+        </ion-buttons>
+        <ion-title class="title">
+            <div>
+                <img [defaultImage]="defaultImage" [lazyLoad]="'assets/logo/logo.png'" class="logo">                
+                <ion-button mode="md" (click)="openSearchbar($event)" >
+                    <svg class="icon start"><use xlink:href="#search-lens-black" /></svg> Search
+                </ion-button>
+            </div>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content #container class="content home-page" [scrollEvents]="true" (ionScroll)="pageScrolling($event)">
+    <ion-grid class="wrapper">
+        <ion-slides pager [options]="bannerSlideOpts" class="banner-slider" #bannerSlider>
+            <ng-container *ngFor="let slide of bannerSlides">
+                <ion-slide class="slider {{slide?.app_text_position}}"
+                    [style.background]="slide?.app_background" [style.color]="slide?.app_foreground"
+                    [ngClass]="(slide?.title && slide?.sub_title) ? 'info-slider' : 'image-slider'"                       
+                    (click)="selectedSlide(slide)">
+                    <ng-container *ngIf="slide?.sub_title; else imageSlider">
+                        <h4 class="title" [innerHTML]="slide.title"></h4>
+                        <p class="desc" [innerHTML]="slide.sub_title | slice:0:200"></p>
+                        <ion-button color="secondary" mode="md" class="btn" *ngIf="slide?.type === 1">
+                            Shop Now
+                        </ion-button>
+                        <ion-button color="secondary" mode="md" class="btn" *ngIf="slide?.type === 2">
+                            Learn More
+                        </ion-button>
+                        <img *ngIf="slide?.image" [src]="slide?.image" class="img-fluid"/>
+                    </ng-container>
+                    <ng-template #imageSlider>
+                        <img [defaultImage]="''" [lazyLoad]="slide?.image" />
+                    </ng-template>
+                </ion-slide>
+            </ng-container>
+        </ion-slides>
+        <ion-row class="shop-by-skin-type">
+            <ion-text class="heading_title">SHOP BY SKIN TYPE</ion-text>
+            <ion-col size="12" class="items">
+                <ng-container *ngIf="skin_typeList; else noSkinTypeWrap;">
+                    <ng-container *ngFor="let item of skin_typeList">
+                        <ion-card class="item" [routerLink]="['/tabs/products', {product_browse_by: 'skin_type', skin_type: $any(item)?.type}]">
+                            <img [defaultImage]="defaultImage" [lazyLoad]="$any(item)?.image?.thumbnail" alt=""/>
+                            <h4 class="title">{{$any(item)?.name}}</h4>
+                        </ion-card>
+                    </ng-container>
+                </ng-container>
+                <ng-template #noSkinTypeWrap>
+                    <ion-card class="item" *ngFor="let item of [].constructor(6)">
+                        <ion-skeleton-text animated style="height: 100px; border-radius: 1rem;"></ion-skeleton-text>
+                        <ion-skeleton-text animated style="width: 60%; margin: 2px auto;"></ion-skeleton-text>
+                    </ion-card>
+                </ng-template>
+            </ion-col>
+        </ion-row>
+        <ion-row class="shop-by-category">
+            <ion-col size="12" class="items">
+                <ng-container *ngIf="categoryList; else noCategoryListWrap;">
+                    <ng-container *ngFor="let item of categoryList">
+                        <ion-card class="item" (click)="selectCategory(item)">
+                            <img [defaultImage]="defaultImage" [lazyLoad]="$any(item)?.image?.thumbnail" alt=""/>
+                        </ion-card>
+                    </ng-container>
+                </ng-container>
+                <ng-template #noCategoryListWrap>
+                    <ion-card class="item" *ngFor="let item of [].constructor(10)">
+                        <ion-skeleton-text animated style="height: 75px; border-radius: .75rem;"></ion-skeleton-text>
+                    </ion-card>
+                </ng-template>
+            </ion-col>
+        </ion-row>  
+        <!-- back-in-stock-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">BACK IN STOCK</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="back_in_stockList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="back_in_stockList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="back_in_stockList?.products?.length > 0">
+                        <ng-container *ngFor="let item of back_in_stockList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'back_in_stock'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- shop by brand --> 
+        <ion-row class="shop-by-brand">
+            <ion-text class="heading_title">SHOP BY BRANDS</ion-text>
+            <ion-col size="12" class="items">
+                <ng-container *ngIf="brandsList && brandsList?.list; else noBrandsListWrap;">
+                    <swiper [slidesPerView]="'auto'" [spaceBetween]="10" [navigation]="true">
+                        <ng-container *ngFor="let item of brandsList?.list">
+                            <ng-template swiperSlide>
+                                <img [defaultImage]="defaultImage" [lazyLoad]="$any(item)?.image?.thumbnail" alt="" (click)="selectBrand(item)"/>
+                            </ng-template>
+                        </ng-container>
+                    </swiper>
+                </ng-container>
+                <ng-template #noBrandsListWrap>
+                    <div class="loader">
+                        <ng-container *ngFor="let item of [].constructor(6)">
+                            <ion-skeleton-text animated style="width: 100px; height: 100px; border-radius: .5rem; background-color: var(--ion-color-primary-contrast);"></ion-skeleton-text>
+                        </ng-container>
+                    </div>
+                </ng-template>
+            </ion-col>
+            <ion-col size="12" class="banner">
+                <swiper>
+                    <ng-container *ngIf="brandsList && brandsList?.banners; else noBrandsListBannerWrap;">
+                        <ng-container *ngFor="let item of brandsList?.banners | slice:0:6">
+                            <ng-template swiperSlide>
+                                <img [defaultImage]="defaultImage" [lazyLoad]="$any(item)?.image?.cover" alt=""/>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
+                    <ng-template #noBrandsListBannerWrap>
+                        <ng-container *ngFor="let item of [].constructor(3)">
+                            <ng-template swiperSlide>
+                                <ion-skeleton-text animated style="height: 200px; background-color: var(--ion-color-primary-contrast);"></ion-skeleton-text>
+                            </ng-template>
+                        </ng-container>
+                    </ng-template>
+                </swiper>
+            </ion-col>
+        </ion-row>
+        <!-- new-arrival-products -->
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">NEW ARRIVALS</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="new_arrivalList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="new_arrivalList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="new_arrivalList?.products?.length > 0">
+                        <ng-container *ngFor="let item of new_arrivalList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'new_arrival'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- best-seller-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">BEST SELLERS</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="best_sellerList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="best_sellerList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="best_sellerList?.products?.length > 0">
+                        <ng-container *ngFor="let item of best_sellerList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'best_seller'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- baby-care-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">BABY CARE</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="baby_careList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="baby_careList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="baby_careList?.products?.length > 0">
+                        <ng-container *ngFor="let item of baby_careList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'baby_care'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- life-style-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">LIFESTYLE</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="life_styleList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="life_styleList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="life_styleList?.products?.length > 0">
+                        <ng-container *ngFor="let item of life_styleList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count && $any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'life_style'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- exclusive-sale-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">EXCLUSIVE SALE</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="exclusive_saleList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="exclusive_saleList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="exclusive_saleList?.products?.length > 0">
+                        <ng-container *ngFor="let item of exclusive_saleList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'exclusive_sale'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row>
+        <!-- shop-by-category-banner -->  
+        <ion-row class="shop-by-category-banner">
+            <ion-text class="heading_title">SHOP BY CATEGORY</ion-text>
+            <ion-col size="12" class="items">
+                <ng-container *ngIf="categoryList; else noCategoryListCoverWrap;">
+                    <ion-card class="item" *ngFor="let item of categoryList">
+                        <img [defaultImage]="defaultImage" [lazyLoad]="$any(item)?.image?.cover" alt="" (click)="selectCategory(item)"/>
+                    </ion-card>
+                </ng-container>
+                <ng-template #noCategoryListCoverWrap>
+                    <ng-container *ngFor="let item of [].constructor(10)">                        
+                        <ion-skeleton-text animated style="height: 75px;"></ion-skeleton-text>
+                    </ng-container>
+                </ng-template>
+            </ion-col>
+        </ion-row> 
+        <!-- featured-products -->      
+        <ion-row class="product-with-banner">
+            <ion-text class="heading_title">FEATURED PRODUCTS</ion-text>
+            <ion-col size="12" class="banner">
+                <img [defaultImage]="defaultImage" [lazyLoad]="featuredList?.banner" alt="">
+            </ion-col>
+            <ion-col size="12" class="wrap">
+                <ng-container *ngIf="featuredList?.products; else noProductWrap">
+                    <ion-list class="items" *ngIf="featuredList?.products?.length > 0">
+                        <ng-container *ngFor="let item of featuredList?.products | slice: 0:12">
+                            <ion-card class="box" routerLink="/product-details/{{$any(item)?.product_id}}" routerDirection="forward">
+                                <ion-card-header class="_img">
+                                    <img [defaultImage]="defaultImageForProduct" [lazyLoad]="$any(item)?.image" />
+                                    <p class="top">
+                                        <img *ngIf="$any(item)?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                        <img *ngIf="$any(item)?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                    </p>
+                                </ion-card-header>
+                                <ion-card-content class="_details">
+                                    <span class="_title">{{$any(item)?.brand_name}}</span>
+                                    <span class="_desc">{{$any(item)?.name}}</span>
+                                    <span class="_price" >
+                                        <ng-container *ngIf="$any(item)?.discount_price === $any(item)?.regular_price; else discountPriceWrap;">
+                                            {{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        </ng-container>
+                                        <ng-template #discountPriceWrap>
+                                            {{$any(item)?.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                            <small>{{$any(item)?.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                        </ng-template>
+                                    </span>
+                                    <span class="_app_price" *ngIf="$any(item)?.app_price && $any(item)?.app_price > 0 && $any(item)?.app_price !== $any(item)?.discount_price">
+                                        App Price: {{$any(item)?.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </span>
+                                    <span class="_rate">
+                                        <span><rating [rate]="$any(item)?.review_rate ? $any(item)?.review_rate : 0" class="readonly small"></rating></span>
+                                        <span>({{$any(item)?.review_count ? $any(item)?.review_count : 0}} {{$any(item)?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                    </span>
+                                    <ng-container *ngIf="$any(item)?.product_in <= 0">
+                                        <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                    </ng-container>
+                                </ion-card-content>
+                            </ion-card>
+                        </ng-container>
+                    </ion-list>
+                    <ion-button size="small" color="tertiary" mode="ios" class="all_btn" 
+                    [routerLink]="['/tabs/products', {product_browse_by: 'featured'}]">
+                        SHOW MORE
+                    </ion-button>
+                </ng-container>
+            </ion-col>
+        </ion-row> 
+        <!-- shop by brand --> 
+        <ion-row class="blog">
+            <ion-text class="heading_title">BLOG</ion-text>
+            <ion-col size="12" class="items">
+                <swiper [slidesPerView]="'auto'" [spaceBetween]="10" [navigation]="true">
+                    <ng-container *ngIf="blogList; else noblogListWrap">
+                        <ng-container *ngFor="let item of blogList;">
+                            <ng-template swiperSlide>
+                                <ion-card class="card" (click)="blogDetails($any(item)?.id)">
+                                    <img class="img" [defaultImage]="defaultImageForBlog" [lazyLoad]="$any(item)?.image" />
+                                    <!-- <ion-card-header class="header"[ngStyle]="{background: 'url('+$any(item)?.image+') center / cover'}"></ion-card-header> -->
+                                    <ion-card-content class="content">
+                                        <p class="desc">{{($any(item)?.title.length>30)? ($any(item)?.title | slice:0:25)+'...':($any(item)?.title)}}</p>
+                                    </ion-card-content>
+                                </ion-card>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
+                    <ng-template #noblogListWrap>
+                        <ng-container *ngFor="let item of [].constructor(6)">
+                            <ng-template swiperSlide>
+                                <ion-card class="card">
+                                    <ion-skeleton-text animated style="height: 150px"></ion-skeleton-text>
+                                    <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                                    <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                                    <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                                </ion-card>
+                            </ng-template>
+                        </ng-container>
+                    </ng-template>
+                  </swiper>
+            </ion-col>
+        </ion-row>
+        <ion-row class="instagram">
+            <ion-col size="12" *ngIf="instraWrapShow === true">
+                <iframe src="https://cdn.lightwidget.com/widgets/bfc263d62bf455b998fb9d3f4d8172da.html" scrolling="no" allowtransparency="true" class="lightwidget-widget" style="width:100%;border:0;overflow:hidden;"></iframe>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ng-template #noProductWrap>
+        <ion-list class="items">
+            <ion-card class="box" style="background: #fff;" *ngFor="let item of [].constructor(12)">
+                <ion-skeleton-text animated style="width: 100%; height: 150px; margin: 0;"></ion-skeleton-text>
+                <ion-card-content class="content">
+                    <h4>
+                        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                    </h4>
+                    <p class="ion-margin-bottom">
+                        <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+                        <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                    </p>
+                </ion-card-content>
+            </ion-card>
+        </ion-list>
+    </ng-template>
+    <!-- <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Please wait..."></ion-refresher-content>
+    </ion-refresher> -->
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="isPreButton">
+    <ion-fab-button color="secondary" class="vip">
+        <ion-text routerLink="/vip-privilege">&nbsp;VIP PRIVILEGES&nbsp;</ion-text>
+        <ion-icon name="close-circle-outline" mode="md" (click)="setPreButton()"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

@@ -1,0 +1,13 @@
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: .75em;height: 100%;
+    form {height: 100%;background: var(--body-bg-color);padding: 1em 0;}
+    p {font-size: 14px;text-align: center;padding-top: .5em;width: 85%;margin: 1em auto;}
+    .list {margin-bottom: 1em; padding: 1em;
+      .item {--padding-start: 0;--inner-padding-end: 0; margin-bottom: .5em;
+        ion-label {margin: 0 0 8px;}
+        ion-input, ion-textarea, ion-select, ion-datetime {background: var(--body-bg-light-color);--placeholder-font-weight: 300;--padding-start: 8px;margin-top: 0;}
+        .validation-message {margin: 5px 0;font-size: 12px; line-height: 1.5;color: var(--ion-color-danger);list-style: circle; padding-left: 2em;}
+      }
+    }
+  }
+}

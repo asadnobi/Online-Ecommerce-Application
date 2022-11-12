@@ -1,0 +1,67 @@
+<ion-header class="header" mode="md">
+    <ion-toolbar class="toolbar" mode="ios" color="primary">
+        <ion-title class="title" mode="ios">
+            VIP PRIVILEGES
+        </ion-title>
+            <ion-buttons slot="start">
+                <ion-back-button defaultHref="tabs/account"></ion-back-button>
+            </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <ion-grid class="wrapper">
+        <ion-row class="details">
+            <ion-col size="12">
+                <img class="img-fluid" [defaultImage]="defaultImage" [lazyLoad]="'https://www.themallbd.com/website/static/vip/header1.jpg'"/>
+            </ion-col>
+            <ion-col size="12" class="ion-margin-top">
+                <h3 class="ion-margin-bottom">CATEGORIES</h3>
+                <ul class="cat-btn-grp">
+                    <ng-container *ngFor="let privilege of privilege_data">
+                        <li class="cat-btn" [ngClass]="{'active': privilege?.id === selected_cat}"
+                            (click)="selectCat(privilege?.id)">
+                            <img class="img-fluid max-75" [defaultImage]="defaultImage" [lazyLoad]="privilege?.logo_url"/>
+                            <p class="text">{{privilege?.name}}</p>
+                        </li>
+                    </ng-container>
+                </ul>
+                <ng-container *ngFor="let privilege of privilege_data">
+                    <ul class="related-grp" id="related-cats-{{privilege.id}}" [ngStyle]="{display: selected_cat === privilege.id ? 'grid': 'none'}">
+                        <ng-container *ngFor="let item of privilege['related_privileges']">
+                            <li class="card" routerLink="/vip-privilege-details/{{item.id}}">
+                                <!-- <p class="img"
+                                   [ngStyle]="{'background': 'url('+ item?.image_url +') no-repeat center center / contain'}"></p> -->
+                                <ion-img class="img" [src]="item?.image_url" *ngIf="item?.image_url"></ion-img>
+                                <p class="title">{{item?.name}}</p>
+                                <p class="subtitle">{{item?.category_name}}</p>
+                                <p class="discount">{{item?.discount_text}}</p>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </ng-container>
+            </ion-col>
+            <ion-col size="12">
+                <img class="img-fluid" [defaultImage]="defaultImage" [lazyLoad]="'https://themallbd.com/website/assets/images/vip/banner.jpg'"/>
+            </ion-col>
+            <ion-col size="12" class="ion-margin-top">
+                <h3 class="ion-margin-bottom">TRENDING OFFERS</h3>
+                <ul class="related-grp">
+                    <ng-container *ngFor="let item of trending_data">
+                        <li class="card" routerLink="/vip-privilege-details/{{item.id}}">
+                            <!-- <p class="img"
+                               [ngStyle]="{'background': 'url('+ item?.image_url +') no-repeat center center / contain'}"></p> -->
+                            <ion-img class="img" [src]="item?.image_url" *ngIf="item?.image_url"></ion-img>
+                            <p class="title">{{item?.name}}</p>
+                            <p class="subtitle">{{item?.category?.name}}</p>
+                            <p class="discount">{{item?.discount_text}}</p>
+                        </li>
+                    </ng-container>
+                </ul>
+            </ion-col>
+            <ion-col size="12">
+                <img class="img-fluid" [defaultImage]="defaultImage" [lazyLoad]="'https://themallbd.com/website/assets/images/vip/banner_1.jpg'"/>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

@@ -1,0 +1,64 @@
+<ion-header class="header">
+    <ion-toolbar class="toolbar" color="primary">
+        <ion-title class="title">{{subCategoryName ? subCategoryName : categoryName}}</ion-title>
+        <ion-buttons slot="start">
+            <ion-button fill="clear" (click)="backClose()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar class="content">
+        <ion-grid class="wrapper">
+            <ion-col size="12" class="chips">
+                <ion-chip (click)="sortByInStock()">
+                    <ion-label>In-stock Items</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortByNewArrival()">
+                    <ion-label>New Arrival</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortBy('best-selling')">
+                    <ion-label>Best Selling</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortBy('title-ascending')">
+                    <ion-label>A - Z</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortBy('title-descending')">
+                    <ion-label>Z - A</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortBy('price-ascending')">
+                    <ion-label>Price low to high</ion-label>
+                </ion-chip>
+                <ion-chip (click)="sortBy('price-descending')">
+                    <ion-label>Price high to low</ion-label>
+                </ion-chip>
+            </ion-col>
+        </ion-grid>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="content">
+    <ion-list mode="ios" lines="full">
+        <ng-container *ngIf="subCatList && subCatList?.length > 0; else noSubCatList">
+            <!-- <ion-item lines="full" (click)="showAll(subCategoryId, subCategoryName)" color="medium">
+                <ion-label>Show all</ion-label>
+                <ion-icon name="arrow-forward" slot="end"></ion-icon>
+            </ion-item> -->
+            <ng-container *ngFor="let item of subCatList">
+                <ion-item detail (click)="selectCategory(item)">
+                    <ion-label class="ion-text-wrap">{{item?.name}}</ion-label>
+                </ion-item>
+            </ng-container>
+        </ng-container>
+        <ng-template #noSubCatList>
+            <!-- <ion-item (click)="showAll(categoryId, categoryName)" color="medium">
+                <ion-label>Show all</ion-label>
+                <ion-icon name="arrow-forward" slot="end"></ion-icon>
+            </ion-item> -->
+           <!-- <ng-container *ngFor="let item of jsonConvert((route.queryParams | async)?._list)">-->
+            <ng-container *ngFor="let item of catListData">
+                <ion-item detail (click)="selectCategory(item)">
+                    <ion-label class="ion-text-wrap">{{item?.name}}</ion-label>
+                </ion-item>
+            </ng-container>
+        </ng-template>
+    </ion-list>
+</ion-content>

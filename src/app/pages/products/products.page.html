@@ -1,0 +1,221 @@
+<ion-header class="header" mode="md">
+    <ion-toolbar class="toolbar" color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="goBack()">
+                <ion-icon slot="icon-only" name="arrow-back" mode="md"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title class="title">Products</ion-title>
+        <ion-buttons slot="end">
+            <ion-button routerLink="/notification">
+                <ion-icon slot="icon-only" name="notifications-outline" mode="ios"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar class="filterbar">
+        <ion-segment mode="ios">
+            <ion-segment-button mode="ios" class="button">
+                <ion-label>Skin Type</ion-label>
+                <ionic-selectable #skinTypeWrap [items]="skinArray" itemValueField="value" itemTextField="label" [canSearch]="true" (onChange)="selectSkinType($event)">
+                    <ng-template ionicSelectableHeaderTemplate>
+                        <ion-toolbar color="primary" mode="ios">
+                            <ion-buttons slot="start">
+                                <ion-button mode="ios" fill="clear" (click)="skinTypeWrap.close();">
+                                    <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                </ion-button>
+                            </ion-buttons>
+                            <ion-title>Select Skin Type</ion-title>
+                        </ion-toolbar>
+                    </ng-template>
+                </ionic-selectable>               
+            </ion-segment-button>
+            <ion-segment-button mode="ios" class="button">
+                <ion-label>Brand</ion-label>
+                <ionic-selectable #brandWrap [items]="brandList" itemValueField="id" itemTextField="name" [canSearch]="true" 
+                    (onChange)="selectBrand($event)" (onOpen)="getBrandListData()">
+                    <ng-template ionicSelectableHeaderTemplate>
+                        <ion-toolbar color="primary" mode="ios">
+                            <ion-buttons slot="start">
+                                <ion-button mode="ios" fill="clear" (click)="brandWrap.close()">
+                                    <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                </ion-button>
+                            </ion-buttons>
+                            <ion-title>Select Brand</ion-title>
+                        </ion-toolbar>
+                    </ng-template>
+                </ionic-selectable>
+            </ion-segment-button>
+            <ion-segment-button mode="ios" class="button"
+                                (click)="isPriceRangeShow ? isPriceRangeShow = false : isPriceRangeShow = true">
+                <ion-label>Price</ion-label>
+            </ion-segment-button>
+            <ion-segment-button mode="ios" class="button">
+                <ion-label>Category</ion-label>
+                <ionic-selectable #categoryWrap [items]="categoryList" itemValueField="id" itemTextField="name" 
+                    groupValueField="group.id" groupTextField="group.name" [canSearch]="true" 
+                    (onChange)="selectCategory($event)" (onOpen)="getCategoryListData()">
+                    <ng-template ionicSelectableHeaderTemplate>
+                        <ion-toolbar color="primary" mode="ios">
+                            <ion-buttons slot="start">
+                                <ion-button mode="ios" fill="clear" (click)="categoryWrap.close()">
+                                    <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                </ion-button>
+                            </ion-buttons>
+                            <ion-title>Select Category</ion-title>
+                        </ion-toolbar>
+                    </ng-template>
+                    <ng-template ionicSelectableGroupTemplate let-group="group">
+                        <ion-label>{{group.text}}</ion-label>
+                    </ng-template>
+                </ionic-selectable>
+            </ion-segment-button>
+        </ion-segment>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content" [scrollEvents]="true" (ionScroll)="pageScrolling($event)">
+    <ion-toolbar mode="ios" class="filterinfo" *ngIf="filterList && filterList?.length > 1">
+        <ion-col>
+            <ng-container *ngFor="let item of filterList">
+                <ion-chip outline="{{item?.name === browse_by || (browse_by === 'cat_sort_by' && item?.name === 'category') ? false : true}}" mode="ios" *ngIf="item?.name !== 'product_type'">
+                    <ion-label><strong class="ion-text-capitalize">{{item.name | specialChar}} :</strong> {{item.label}}</ion-label>
+                    <ng-container *ngIf="item?.name !== browse_by && (browse_by !== 'cat_sort_by' || item?.name !== 'category')">
+                        <ion-icon name="close" color="danger" (click)="removeFromFilter(item)"></ion-icon>
+                    </ng-container>
+                </ion-chip>
+            </ng-container>
+        </ion-col>
+        <ion-buttons slot="primary">
+            <ion-button color="danger" mode="ios" (click)="clearFilter()">
+                <u>Clear Filters</u>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-grid class="wrapper">
+        <ion-row class="products-info">
+            <ion-col size="6" class="left">
+                <p>Items: {{listDataTotal}}</p>
+            </ion-col>
+            <ion-col size="6" class="right">
+                <ion-label>Sort By:</ion-label>
+                <ionic-selectable #sortWrap [items]="sortByArray" itemValueField="value" itemTextField="label" [canSearch]="true" 
+                (onChange)="selectSortBy($event)">
+                    <ng-template ionicSelectableHeaderTemplate>
+                        <ion-toolbar color="primary" mode="ios">
+                            <ion-buttons slot="start">
+                                <ion-button mode="ios" fill="clear" (click)="sortWrap.close()">
+                                    <ion-icon name="arrow-back" mode="ios"></ion-icon> Back
+                                </ion-button>
+                            </ion-buttons>
+                            <ion-title>Select Skin Type</ion-title>
+                        </ion-toolbar>
+                    </ng-template>
+                </ionic-selectable>
+            </ion-col>
+        </ion-row>
+        <ion-row class="products">
+            <ion-col size="12">
+                <ion-list class="items" *ngIf="listData && listData.length > 0">
+                    <ng-container *ngFor="let item of listData">
+                        <ion-card class="box" routerLink="/product-details/{{item.product_id}}" routerDirection="forward">
+                            <ion-card-header class="_img">
+                                <img [defaultImage]="defaultImage" [lazyLoad]="item.image" />
+                                <p class="top">
+                                    <img *ngIf="item?.is_bestseller === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/best_seller.png'" alt="">
+                                    <img *ngIf="item?.is_new === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/new_arrival.png'" alt="">
+                                    <img *ngIf="item?.is_back === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/back_in_stock.png'" alt="">
+                                    <img *ngIf="item?.is_fav === 1" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/product-tags/favourite.png'" alt="">
+                                </p>
+                            </ion-card-header>
+                            <ion-card-content class="_details">
+                                <span class="_title">{{item.brand_name}}</span>
+                                <span class="_desc">{{item.name}}</span>
+                                <span class="_price" >
+                                    <ng-container *ngIf="item.discount_price === item.regular_price; else discountPriceWrap;">
+                                        {{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </ng-container>
+                                    <ng-template #discountPriceWrap>
+                                        {{item.discount_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                        <small>{{item.regular_price | currency:'BDT':'symbol-narrow':'1.0-0'}}</small>
+                                    </ng-template>
+                                </span>
+                                <span class="_app_price" *ngIf="item?.app_price && item?.app_price > 0 && item?.app_price !== item?.discount_price">
+                                    App Price: {{item.app_price | currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                </span>
+                                <span class="_rate">
+                                    <span><rating [rate]="item.review_rate ? item.review_rate : 0" class="readonly small"></rating></span>
+                                    <span>({{item?.review_count ? item?.review_count : 0}} {{item?.review_count > 1 ? 'reviews' : 'review'}})</span>
+                                </span>
+                                <ng-container *ngIf="item?.product_in <= 0">
+                                    <img class="_stock" [defaultImage]="defaultImage" [lazyLoad]="'assets/images/out-of-stock.png'" alt="">
+                                </ng-container>
+                            </ion-card-content>
+                        </ion-card>
+                    </ng-container>
+                </ion-list>
+                <ion-list class="items" *ngIf="!listData">
+                    <ion-card class="box" *ngFor="let item of [].constructor(6)">
+                        <ion-card-header class="ion-no-padding">
+                            <ion-skeleton-text animated style="width: 100%; height: 100px; margin: 0;"></ion-skeleton-text>
+                        </ion-card-header>
+                        <ion-card-content class="_details">
+                            <span class="_title"><ion-skeleton-text animated
+                                style="width: 50%"></ion-skeleton-text></span>
+                            <span class="_desc"><ion-skeleton-text animated
+                                style="width: 85%"></ion-skeleton-text></span>
+                            <span class="_price"><ion-skeleton-text animated
+                                style="width: 95%"></ion-skeleton-text></span>
+                            <span class="_rate">
+                                <span><ion-skeleton-text animated style="width: 25px"></ion-skeleton-text></span>
+                                <span><ion-skeleton-text animated style="width: 50px"></ion-skeleton-text></span>
+                            </span>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-list>
+            </ion-col>
+            <ion-col class="empty" *ngIf="listData?.length === 0">
+                <img [defaultImage]="defaultImage" [lazyLoad]="'assets/images/no-data.png'"/>
+                <p>Sorry! no data found<span>Try Something else</span></p>
+            </ion-col>
+        </ion-row>
+        <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)">
+            <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data..."></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </ion-grid>
+    <ion-grid class="overlay" [ngStyle]="{'display': isPriceRangeShow ? 'block' : 'none'}"
+              (click)="isPriceRangeShow = false">
+    </ion-grid>
+    <ion-card class="price-range" [ngStyle]="{'display': isPriceRangeShow ? 'block' : 'none'}">
+        <ion-card-header>
+            <ion-card-title mode="md">Filter By 'Price'</ion-card-title>
+            <ion-card-subtitle mode="md">Select your price range</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content mode="md" class="content">
+            <ion-item mode="md" lines="none">
+                <ion-range mode="md" min="10" max="10000" dualKnobs="true" [(ngModel)]="price_range">
+                    <ion-label slot="start" class="ion-text-left">{{price_range?.lower ? (price_range?.lower |
+                        currency:'BDT':'symbol-narrow':'1.0-0') : (10 | currency:'BDT':'symbol-narrow':'1.0-0')}} min.
+                    </ion-label>
+                    <ion-label slot="end" class="ion-text-right">{{price_range?.upper ? (price_range?.upper |
+                        currency:'BDT':'symbol-narrow':'1.0-0') : (10000 | currency:'BDT':'symbol-narrow':'1.0-0')}}
+                        max.
+                    </ion-label>
+                </ion-range>
+            </ion-item>
+            <ng-container *ngIf="price_range">
+                <ion-button type="button" fill="clear" (click)="price_range = null;">
+                    Reset
+                </ion-button>
+            </ng-container>
+            <ion-button type="button" fill="clear" (click)="isPriceRangeShow = false;">
+                Cancel
+            </ion-button>
+            <ion-button fill="clear" (click)="isPriceRangeShow = false; priceRangeChange(price_range)">Ok</ion-button>
+        </ion-card-content>
+    </ion-card>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="isScollTopBarShow && (listData && listData.length > 0)">
+        <ion-fab-button (click)="scrollToTop()" size="small">
+            <ion-icon name="chevron-up-circle-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

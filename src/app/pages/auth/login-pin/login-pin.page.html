@@ -1,0 +1,34 @@
+<ion-header class="header">
+	<ion-toolbar class="toolbar" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/account"></ion-back-button>
+    </ion-buttons>
+		<ion-title class="title">Enter Your PIN</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <ion-grid class="wrapper">
+    <ion-row>
+      <ion-col size="12">
+        <p class="title">We've sent a 4-digit one time PIN in your phone <b>{{phone_number}}</b>. It will expire within 3 minutes.</p>
+        <p class="promo-title">Enter Your 4-digit PIN Number</p>
+        <form [formGroup]="form" (ngSubmit)="pinMatch(form.value)">
+          <ion-item>
+            <ion-icon slot="start" name="finger-print"></ion-icon>
+            <ion-input type="text" maxlength="4" placeholder="Enter your PIN..." formControlName="pin_number"></ion-input>
+          </ion-item>
+          <ul class="invalid-feedback" *ngIf="f.pin_number.touched && f.pin_number.errors">
+            <li *ngIf="f.pin_number.errors.required">PIN Number is required.</li>
+            <li *ngIf="f.pin_number.errors.pattern">PIN Number must be number.</li>
+            <li *ngIf="f.pin_number.errors.minlength">PIN Number must be 4-digit.</li>
+          </ul>
+          <ion-button type="submit" expand="block" [disabled]="form.invalid">Apply</ion-button>
+          <ion-button type="button" expand="block" fill="clear" (click)="newPin()" [disabled]="(!timer || timer <= 0) ? false : true">
+            {{(timer && timer > 0) ? 'Request PIN Again? wait: '+min+':'+sec  : 'Request PIN Again'}}
+          </ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

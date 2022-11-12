@@ -1,0 +1,10 @@
+
+.wrapper {padding: .75em; display: block; text-align: center;}
+.related-grp {list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); grid-gap: 1em;
+  .card {box-shadow: 0 0 20px rgba(0, 0, 0, .15); color: #000000; background: #ffffff;padding: .75em 1em 1.5em; border-radius: .75rem;text-transform: uppercase;
+    .img {min-height: 200px; margin-bottom: 1em;}
+    .title {font-size: 18px; margin-bottom: .25em;}
+    .subtitle {font-size: 11px; margin-bottom: .25em; color: #7aa93c;}
+    .discount {font-size: 14px;color: #b41f25;}
+  }
+}

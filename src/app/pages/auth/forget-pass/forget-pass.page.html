@@ -1,0 +1,28 @@
+<ion-header class="header">
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="tabs/account"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Forget Password</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <ion-grid class="wrapper">
+        <form [formGroup]="form" (ngSubmit)="sendEmail(form.value)">
+            <p>Please insert your registered email address and we will send password reset link to your email.</p>
+            <ion-list class="list">
+                <ion-item lines="none" class="item" mode="md">
+                    <ion-label mode="ios" position="stacked">E-mail</ion-label>
+                    <ion-input formControlName="email" type="email" placeholder="example@gmail.com"></ion-input>
+                    <ul class="validation-message"
+                        *ngIf="f.email.touched && f.email.errors || submitted && f.email.errors">
+                        <li *ngIf="f.email.errors.required">Email is required.</li>
+                        <li *ngIf="f.email.errors.pattern">Email is not valid.</li>
+                    </ul>
+                </ion-item>
+                <ion-button mode="ios" type="submit" expand="block" color="dark">Send</ion-button>
+            </ion-list>
+        </form>
+    </ion-grid>
+</ion-content>

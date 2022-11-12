@@ -1,0 +1,19 @@
+.header {
+	.toolbar {box-shadow: 0 0 16px rgba(0, 0, 0, .12);
+		.title {font-size: 18px; font-weight: 500; text-transform: capitalize;}
+  }
+}
+.content {--background: var(--body-bg-light-color);
+  .wrapper {padding: 1em;
+    .title {font-size: 14px; line-height: 1.5;text-align: center;margin-bottom: 2em;}
+    .promo-title {font-size: 14px;margin-bottom: 5px;font-weight: 600;color: #6c757d;}
+    .item {--inner-border-width: 0;--border-radius: 4px;--border-width: 1px;--padding-start: 8px;font-size: 14px;
+         color: #1e2023; font-weight: 500;--min-height: 40px; margin-bottom: 1em;
+         ion-icon {color: #6c757d;margin-inline-end: 16px;}
+    }
+    .invalid-feedback {font-size: 12px; color: var(--ion-color-danger);padding-left: 1em;}
+    .button {text-transform: unset;min-height: 40px;
+      &:first-child {font-size: 18px;}
+    }
+  }
+}

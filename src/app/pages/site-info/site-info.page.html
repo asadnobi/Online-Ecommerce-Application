@@ -1,0 +1,71 @@
+<ion-header class="header">
+  <ion-toolbar class="toolbar" color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{page.split('-').join(' ') | titlecase}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <ion-grid fixed class="wrapper">
+    <ion-row class="layout">
+      <ion-col size="12" *ngIf="pageData?.content">
+        <div [innerHTML]="content"></div>
+      </ion-col>
+      <ion-col size="12" *ngIf="page === 'contact-us'">
+        <form class="contact-form ion-margin-bottom" [formGroup]="contactForm" (ngSubmit)="sendMessage()">
+          <ion-item mode="ios">
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-select mode="ios" interface="popover" formControlName="subject" placeholder="Subject">
+              <ion-select-option value="Customer Service">Customer Service</ion-select-option>
+              <ion-select-option value="Webmaster">Webmaster</ion-select-option>
+            </ion-select>
+            <ul class="validation-message" *ngIf="f.subject.touched && f.subject.errors || submitted && f.subject.errors">
+                <li *ngIf="f.subject.errors.required">Subject is required.</li>
+            </ul>
+          </ion-item>
+          <ion-item>
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-input placeholder="Email" formControlName="email"></ion-input>
+            <ul class="validation-message" *ngIf="f.email.touched && f.email.errors || submitted && f.email.errors">
+              <li *ngIf="f.email.errors.required">Email is required.</li>
+              <li *ngIf="f.email.errors.pattern">Email is not valid.</li>
+            </ul>
+          </ion-item>
+          <ion-item>
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-input placeholder="Phone Number" formControlName="phone"></ion-input>
+            <ul class="validation-message" *ngIf="f.phone.touched && f.phone.errors || submitted && f.phone.errors">
+              <li *ngIf="f.phone.errors.required">Phone no. is required.</li>
+              <li *ngIf="f.phone.errors.pattern">Phone no. is not valid.</li>
+            </ul>
+          </ion-item>
+          <ion-item>
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-input placeholder="Order reference no." formControlName="order"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-input placeholder="Attachment" type="file" (change)="oploadFile($event)"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label mode="md" position="stacked"></ion-label>
+            <ion-textarea rows="3" placeholder="Message" formControlName="message"></ion-textarea>
+            <ul class="validation-message" *ngIf="f.message.touched && f.message.errors || submitted && f.message.errors">
+              <li *ngIf="f.message.errors.required">Message is required.</li>
+              <li *ngIf="f.message.errors.minlength">Please write valid message.</li>
+            </ul>
+          </ion-item>
+          <ion-button type="submit" expand="block">Send</ion-button>
+        </form>
+        <ion-text class="ion-padding-top">
+          <h5>Contact Details</h5>
+          <p><a href="callto: +8801977300901">+8801977300901</a> , <a href="callto: +8801977300902">+8801977300902</a></p>          
+          <p><a href="mailto: hr@themallbd.com">hr@themallbd.com</a></p>          
+          <p>The Mall Limited Dhaka Office Road 12, House- 6 Nikunjo-2 Dhaka Bangladesh</p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

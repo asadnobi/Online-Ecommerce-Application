@@ -1,0 +1,127 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu type="overlay" side="start" class="sideMenu" menuId="main" contentId="main-content" (ionDidOpen)="openMenu($event)">
+      <ion-toolbar class="toolbar">
+        <ion-buttons slot="end">
+          <ion-button fill="clear" color="light" (click)="hideMenu()">
+            <ion-icon slot="icon-only" mode="md" name="close-circle"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-content class="content">
+        <ion-list mode="md" lines="none">
+          <ion-list-header class="header" (click)="hideMenu()" [routerLink]="['/tabs/browse/offer']">
+            <ion-label class="blink">Offers</ion-label>
+          </ion-list-header>
+        </ion-list>
+        <ion-list mode="md" lines="none">
+          <ion-list-header class="header" (click)="hideMenu()" [routerLink]="['/tabs/browse/brand']">
+            <ion-label>Brands</ion-label>
+          </ion-list-header>
+        </ion-list>
+        <ion-list  mode="md" lines="none">
+          <ion-list-header class="header">
+            <ion-label>Categories</ion-label>
+          </ion-list-header>
+          <ng-container *ngIf="categoryList && categoryList?.length > 0; else noCategoryList">
+            <ng-container *ngFor="let menu of categoryList; index as i;">
+              <ul class="collapsed">
+                <li class="item">
+                  <div (click)="selectCategory(menu); hideMenu()">
+                    <ion-avatar class="image">
+                      <img [src]="menu?.thumbnail"/>
+                    </ion-avatar>
+                    <ion-label>{{menu?.name}}</ion-label>
+                  </div>
+                  <div (click)="accordionGroup(i)">
+                    <span class="icon"></span>
+                  </div>
+                </li>
+                <ion-list mode="md" lines="none" id="accordion_{{i}}" style="height: 0; transition: height .5s ease;">
+                  <li class="item sub" *ngFor="let submenu of menu?.children">
+                    <div (click)="selectCategory(submenu); hideMenu()">
+                      <ion-label>{{submenu?.name}}</ion-label>
+                    </div>
+                    <div (click)="selectSubCategory(submenu); hideMenu()">
+                      <ion-icon mode="md" name="add" color="light"></ion-icon>
+                    </div>
+                  </li>
+                </ion-list>
+              </ul>
+            </ng-container>
+          </ng-container>         
+          <ng-template #noCategoryList>
+            <ion-item *ngFor="let item of [].constructor(5)">
+              <ion-avatar slot="start">
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </ion-avatar>
+              <ion-label class="ion-text-wrap">
+                <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+          </ng-template>
+        </ion-list>        
+        <ion-list mode="md" lines="none">
+          <ion-list-header class="header" (click)="hideMenu()" [routerLink]="['/tabs/products', {product_browse_by: 'combo_offer'}]">
+            <ion-label>Combo Offers</ion-label>
+          </ion-list-header>
+        </ion-list>
+        <ion-list mode="md" lines="none">
+          <ion-item mode="md" (click)="openAppUrl('facebook', 'groups/themallbd'); hideMenu()">
+            <ion-label class="ion-text-capitalize">Join The Community!</ion-label>
+          </ion-item>
+        </ion-list>
+        <!-- <ion-list mode="md" lines="none">
+          <ion-list-header class="header">
+            <ion-label>Holiday Shop</ion-label>
+          </ion-list-header>
+          <ion-item mode="md" (click)="hideMenu()" [routerLink]="['/tabs/products', {product_browse_by: 'holiday_shop'}]">
+            <ion-label>Shop All Holiday</ion-label>
+          </ion-item>
+          <ion-item mode="md" (click)="hideMenu()" [routerLink]="['/tabs/browse/offer']"> 
+            <ion-label>Offers</ion-label>
+          </ion-item>
+          <ion-item mode="md" (click)="hideMenu()" [routerLink]="['/tabs/products', {product_browse_by: 'combo_offer'}]">
+            <ion-label>Combo Offers</ion-label>
+          </ion-item>
+          <ng-container *ngIf="holidayMenu && holidayMenu?.length > 0; else noHolidayMenu">
+            <ng-container *ngFor="let item of holidayMenu">
+              <ion-item mode="md" (click)="hideMenu()" [routerLink]="['/tabs/products', {product_browse_by: 'holiday_shop_gift', gift_name: item.name, gift_id: item.menu_id}]">   
+                <ion-label>{{item.name}}</ion-label>
+              </ion-item>
+            </ng-container> 
+          </ng-container>         
+          <ng-template #noHolidayMenu>
+            <ion-item *ngFor="let item of [].constructor(3)">
+              <ion-label class="ion-text-wrap">
+                <ion-skeleton-text animated style="width: 85%"></ion-skeleton-text>
+                <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+          </ng-template>
+        </ion-list> -->
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet main id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>
+<ng-container *ngIf="loading">
+  <div style="position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 99999; 
+    display: flex; justify-content: center; align-items: center;
+    background: rgba(0, 0, 0, .5); color: white;">
+    <div style="display: grid; grid-auto-flow: column; grid-gap: .5em; align-items: center;">
+      <ion-spinner name="lines"></ion-spinner>
+      <ion-text>Please wait...</ion-text>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="!isConnected">
+	<div class="offline">
+    <img src="assets/images/offline.gif" alt="">
+    <span class="text">Connection Failed</span>
+    <span class="text-des">There seems to be a problem with your network connection...</span>
+    <ion-button expand="full">Refresh</ion-button>
+    <span class="text-more">please check your network & try again</span>
+  </div>
+</ng-container>

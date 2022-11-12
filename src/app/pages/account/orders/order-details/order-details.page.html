@@ -1,0 +1,258 @@
+<ion-header class="header" mode="md">
+    <ion-toolbar class="toolbar" mode="md" color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="goBack()">
+                <ion-icon slot="icon-only" name="arrow-back" mode="md"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title class="title">Order Details</ion-title>
+        <!--<ion-buttons slot="end">
+            <ion-button color="secondary" (click)="printOrder()">
+                <svg class="icon"><use xlink:href="#printer" /></svg>
+            </ion-button>
+        </ion-buttons>-->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <ion-grid class="wrapper" *ngIf="details_data; else loadingWrap;">
+        <ion-row class="layout">
+            <ion-chip class="reason-msg" *ngIf="reason">
+                <ion-label color="danger">{{reason}}</ion-label>
+            </ion-chip>
+            <ion-col size="12">
+                <ion-card class="card">
+                    <ion-card-content class="card-content">
+                        <h2>Order Info</h2>
+                        <hr>
+                        <h4>Invoice ID: {{details_data?.invoice_id}}</h4>
+                        <p>Order Date: {{details_data?.date | date: 'EE, dd MMM, yyyy h:mm a'}}</p>
+                        <p *ngIf="details_data?.note !== null">Order Note: {{details_data?.note}}</p>
+                        <p *ngIf="details_data?.description !== null">Order Description:
+                            {{details_data?.description}}</p>
+                    </ion-card-content>
+                </ion-card>
+                <ion-card class="card" *ngIf="details_data?.payment_status !== 0">
+                    <ion-card-content class="card-content">
+                        <ng-container *ngIf="details_data?.timeline_status === 0; else timelineWrap;">
+                            <h2>Order Status</h2>
+                            <hr>
+                            <ul class="steper steper-1" *ngIf="details_data?.status === 1">
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Pending
+                                </ion-text>
+                                <ion-text class="step">
+                                    <ion-icon name="radio-button-off" mode="ios"></ion-icon>
+                                    Processing
+                                </ion-text>
+                                <ion-text class="step">
+                                    <ion-icon name="radio-button-off" mode="ios"></ion-icon>
+                                    Delivered
+                                </ion-text>
+                                <ion-text class="step">
+                                    <ion-icon name="radio-button-off" mode="ios"></ion-icon>
+                                    Complete
+                                </ion-text>
+                            </ul>
+                            <ul class="steper steper-2" *ngIf="details_data?.status > 1 && details_data?.status < 5">
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Pending
+                                </ion-text>
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Processing
+                                </ion-text>
+                                <ion-text class="step">
+                                    <ion-icon name="radio-button-off" mode="ios"></ion-icon>
+                                    Delivered
+                                </ion-text>
+                                <ion-text class="step">
+                                    <ion-icon name="radio-button-off" mode="ios"></ion-icon>
+                                    Complete
+                                </ion-text>
+                            </ul>
+                            <ul class="steper steper-3" *ngIf="details_data?.status === 5">
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Pending
+                                </ion-text>
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Processing
+                                </ion-text>
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Delivered
+                                </ion-text>
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Complete
+                                </ion-text>
+                            </ul>
+                            <ul class="steper steper-4" *ngIf="details_data?.status === 10 || details_data?.status === 43">
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Pending
+                                </ion-text>
+                                <ion-text color="success" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Processing
+                                </ion-text>
+                                <ion-text color="danger" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Cancel
+                                </ion-text>
+                                <ion-text color="primary" class="step">
+                                    <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                    Complete
+                                </ion-text>
+                            </ul>
+                        </ng-container>
+                        <ng-template #timelineWrap>
+                            <h2>Timeline</h2>
+                            <hr>
+                            <ul class="steper steper-custom">
+                                <ng-container *ngFor="let item of details_data?.timeline.reverse()">
+                                    <ion-text class="step" [ngStyle]="{color: item?.color_code}">
+                                        <ion-icon name="checkmark-circle-outline" mode="ios"></ion-icon>
+                                        {{item?.status}}
+                                    </ion-text>
+                                </ng-container>
+                            </ul>
+                            <ion-list lines="full" class="timeline">
+                                <ng-container *ngFor="let item of details_data?.timeline.reverse()">
+                                    <ion-item> 
+                                        <ion-text class="ion-text-center" slot="start">
+                                            <p>{{item?.date}}<br>{{item?.time}}</p>
+                                        </ion-text>
+                                        <ion-label class="ion-text-wrap">
+                                            <h4>{{item?.status}}</h4>
+                                            <p>{{item?.desc}}</p>
+                                        </ion-label>
+                                        <ion-text slot="end" *ngIf="item?.button && item?.button.length > 0">
+                                            <ng-container *ngFor="let btn of item?.button">
+                                                <ion-button class="btn" size="small" [color]="btn?.color ? btn?.color : 'medium'" shape="round" mode="ios" (click)="changeTimeline(btn)">
+                                                    {{btn?.name}}
+                                                </ion-button>
+                                            </ng-container>
+                                        </ion-text>
+                                    </ion-item>
+                                </ng-container>
+                            </ion-list>
+                        </ng-template>
+                    </ion-card-content>
+                </ion-card>
+                <ion-card class="card">
+                    <ion-card-content class="card-content">
+                        <h2>Order summary</h2>
+                        <hr>
+                        <ion-list lines="full" class="item-list">
+                            <ion-item *ngFor="let item of details_data?.order_details">
+                                <ion-thumbnail slot="start">
+                                    <img [defaultImage]="defaultImage" [lazyLoad]="item.image_url+'/'+item.image">
+                                </ion-thumbnail>
+                                <ion-label class="ion-text-wrap">
+                                    <span>{{item.product_name}}</span>
+                                </ion-label>
+                                <ion-text slot="end" class="price"> {{item.quantity}} x {{item.sales_price |
+                                    currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    <small *ngIf="item.regular_price !== item.sales_price">{{item.regular_price |
+                                        currency:'BDT':'symbol-narrow':'1.0-0'}}
+                                    </small>
+                                </ion-text>
+                            </ion-item>
+                        </ion-list>
+                        <ion-list lines="none" class="sub-total" mode="ios">
+                            <ion-item>
+                                <ion-label class="ion-text-wrap">
+                                    <span>Sub Total</span><span>{{details_data?.net_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="details_data?.discount && details_data?.discount > 0">
+                                <ion-label class="ion-text-wrap dis">
+                                    <span>Discount</span>
+                                    <span>&mdash;&nbsp;&nbsp;{{details_data?.discount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="details_data?.coupon_discount && details_data?.coupon_discount > 0">
+                                <ion-label class="ion-text-wrap">
+                                    <span>Coupon Discount</span>
+                                    <span>&mdash;&nbsp;&nbsp;{{details_data?.coupon_discount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="details_data?.special_discount && details_data?.special_discount > 0">
+                                <ion-label class="ion-text-wrap">
+                                    <span>App Special Discount</span>
+                                    <span>&mdash;&nbsp;&nbsp;{{details_data?.special_discount | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="details_data?.shipping_cost !== null">
+                                <ion-label class="ion-text-wrap">
+                                    <span>Delivery Charge</span>
+                                    <span> 
+                                        <ng-container *ngIf="details_data?.shipping_cost > 0">
+                                            &#65291; {{details_data?.shipping_cost | currency:'BDT':'symbol-narrow':'1.2-2'}}
+                                        </ng-container>
+                                        <ng-container *ngIf="details_data?.shipping_cost === 0">
+                                            Free shipping
+                                        </ng-container>
+                                    </span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item *ngIf="details_data?.service_charge && details_data?.service_charge > 0">
+                                <ion-label class="ion-text-wrap">
+                                    <span>Service Charge</span><span> &#65291; {{details_data?.service_charge | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                            <ion-item class="total" *ngIf="details_data?.grand_total && details_data?.grand_total > 0">
+                                <ion-label class="ion-text-wrap" color="tertiary">
+                                    <span>Total</span><span>{{details_data?.grand_total | currency:'BDT':'symbol-narrow':'1.2-2'}}</span>
+                                </ion-label>
+                            </ion-item>
+                        </ion-list>
+                    </ion-card-content>
+                </ion-card>
+                <ion-card class="card">
+                    <ion-card-content class="card-content">
+                        <h2>Shipping Address</h2>
+                        <hr>
+                        <p>{{details_data?.shipping_address?.first_name}}
+                            {{details_data?.shipping_address?.last_name}}</p>
+                        <p *ngIf="details_data?.shipping_address?.phone !== null">
+                            {{details_data?.shipping_address?.phone}}</p>
+                        <p *ngIf="details_data?.shipping_address?.email !== null">
+                            {{details_data?.shipping_address?.email}}</p>
+                        <p *ngIf="details_data?.shipping_address?.address !== null">
+                            <span>{{details_data?.shipping_address?.address}}</span>
+                            <span *ngIf="details_data?.shipping_address?.area !== null">, {{details_data?.shipping_address?.area}}</span>
+                            <span *ngIf="details_data?.shipping_address?.city !== null">, {{details_data?.shipping_address?.city}}</span>
+                        </p>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ng-template #loadingWrap>
+        <ion-grid class="loading_wrapper">
+            <h4>
+                <ion-spinner name="lines"></ion-spinner>
+                <br>
+                Please wait...
+            </h4>
+        </ion-grid>
+    </ng-template>
+    <ng-container *ngIf="details_data?.payment_status !== 0">
+        <ion-button expand="block" color="tertiary" *ngIf="details_data && backId === '1'" routerLink="/" (click)="setEmptyCart()">
+            Let's start shopping again!
+        </ion-button>
+    </ng-container>
+</ion-content>
+<ion-footer class="footer" *ngIf="details_data?.payment_status === 0">
+    <ion-toolbar class="toolbar">
+        <ion-button type="button" (click)="payTryAgain()" expand="full" shape="round" mode="ios">
+            {{!reason ? 'Want to pay now?' : null}}&nbsp;&nbsp;Try Again <svg class="icon end"><use xlink:href="#next"/></svg>
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>

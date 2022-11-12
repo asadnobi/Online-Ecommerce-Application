@@ -1,0 +1,89 @@
+<ion-header class="header">
+    <ion-toolbar class="toolbar" color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="tabs/account"></ion-back-button>
+        </ion-buttons>
+        <ion-title>My Reviews</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+    <ion-segment [value]="browse_by" (ionChange)="browseBy($event)" mode="ios">
+        <ion-segment-button value="myreviews" mode="ios">
+            <ion-label>My Reviews</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="addreviews" mode="ios">
+            <ion-label>Add Reviews</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+    <ion-list lines="full" class="list" *ngIf="browse_by === 'addreviews'">
+        <ng-container *ngIf="products">
+            <ng-container *ngIf="products?.length > 0; else noReview">
+                <ion-list-header>
+                    <ion-label>Add your feedback</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let item of products">
+                    <ion-avatar slot="start">
+                        <img [defaultImage]="defaultImage" [lazyLoad]="item?.image"/>
+                    </ion-avatar>
+                    <ion-label class="ion-text-wrap">
+                        <h4 class="title">
+                            <!-- <span class="rating">{{item?.rating | number:'1.1-1'}} <ion-icon name="star" class="icon"></ion-icon></span>-->
+                            <span class="text">{{item?.name}}</span>
+                        </h4>
+                        <p class="review">{{item?.review}}</p>
+                        <hr>
+                        <p class="product">
+        
+                            <small><strong>{{item?.brand_name}}</strong></small>
+                            <ion-button style="float: right" fill="outline" size="small" 
+                                        (click)="addReview(item?.product_id)"  mode="ios">
+                                <ion-icon name="star" slot="start"></ion-icon>
+                                Add Review
+                            </ion-button>
+                        </p>
+        
+                    </ion-label>
+                </ion-item>
+            </ng-container>
+        </ng-container>
+    </ion-list>
+    <ion-list lines="full" class="list" *ngIf="browse_by === 'myreviews'">
+        <ng-container *ngIf="listData">
+            <ng-container *ngIf="listData?.length > 0; else noReview">
+                <ion-list-header>
+                    <ion-label>Your feedback</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let item of listData">
+                    <ion-avatar slot="start">
+                        <img [defaultImage]="defaultImage" [lazyLoad]="item?.product?.image"/>
+                    </ion-avatar>
+                    <ion-label class="ion-text-wrap">
+                        <h4 class="title">
+                            <span class="rating">{{item?.rating | number:'1.1-1'}} <ion-icon name="star" class="icon"></ion-icon></span>
+                            <span class="text">{{item?.title}}</span>
+                        </h4>
+                        <p class="review">{{item?.review}}</p>
+                        <hr>
+                        <p class="product">
+                            <ion-button class="btn" fill="clear" size="small"
+                                        (click)="openMenu($event, item?.product?.product_id)">
+                                <ion-icon name="more" slot="icon-only"></ion-icon>
+                            </ion-button>
+                            {{item?.product?.name}}<br>
+                            <small><strong>{{item?.product?.brand_name}}</strong></small>
+                        </p>
+                    </ion-label>
+                </ion-item>
+            </ng-container>
+        </ng-container>
+    </ion-list>
+    <ng-template #noReview>
+        <div class="no-review">
+            <span class="text">No Reviewed Product Found</span>
+            <span class="text-des">Looks Like you have not made any review yet...</span>
+            <ion-button mode="ios" expand="full" [routerLink]="['/']">Explore new activities</ion-button>
+            <span class="text-more">manage your all Rating & Review from here</span>
+        </div>
+    </ng-template>
+</ion-content>

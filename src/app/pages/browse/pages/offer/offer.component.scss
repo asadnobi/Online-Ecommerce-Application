@@ -1,0 +1,17 @@
+
+.content {
+  .wrapper {padding: 0;
+    .grp-button {max-width: 96%; margin: .5em auto;
+      .button {width: 100%;margin: 0;
+    --border-radius: 0;}
+    }
+    .offer {
+      .list {width: 100%; display: block !important;
+        .item {--background: var(--body-bg-light-color); padding: .5em .75em;
+          .ion-text-wrap {font-size: 18px; font-weight: 500;}
+          .image {--border-radius: 50rem;width: 64px;height: 64px;}
+        }
+      }
+    }
+  }
+}
