@@ -1,4 +1,4 @@
-# Ionic E-Commerce App - Your Fast and User-Friendly Shopping Companion
+# DashCart - Your Fast and User-Friendly Shopping Companion
 
 Introducing our feature-rich Ionic E-Commerce mobile application, a cutting-edge solution developed using Node.js and the Ionic framework. This application combines speed, efficiency, and ease of use to provide users with a seamless online shopping experience.
 
